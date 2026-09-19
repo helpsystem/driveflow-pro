@@ -764,7 +764,7 @@
         // ── MODE 1: Standard 2-Hour Lesson Slots View ──
         function renderFuelGauge(fuel) {
             var p = typeof fuel === 'number' ? fuel : parseInt(fuel, 10);
-            if (isNaN(p) || p <= 0) p = 75;
+            if (isNaN(p) || p <= 0) return ''; // unknown fuel level: hide gauge instead of showing a fake value
             p = Math.max(5, Math.min(100, Math.round(p)));
             var isLow = p <= 25;
             var fuelColor = isLow ? '#ff3b57' : (p <= 50 ? '#ffd60a' : '#22ff88');
@@ -1201,4 +1201,16 @@
         document.getElementById('df-fe-modal-num').textContent = plateNum;
         existing.style.display = 'flex';
     });
+})();
+
+/* TV / kiosk: scale the board on large monitors (1440p, 4K, ultrawide). Smaller screens use the CSS breakpoints. */
+(function () {
+    var root = document.documentElement;
+    if (!root.classList.contains('dfv2-kiosk-mode')) return;
+    function fit() {
+        var z = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+        root.style.setProperty('--df-zoom', (window.innerWidth >= 1920 && z > 1) ? (Math.round(z * 100) / 100) : 1);
+    }
+    fit();
+    window.addEventListener('resize', fit);
 })();

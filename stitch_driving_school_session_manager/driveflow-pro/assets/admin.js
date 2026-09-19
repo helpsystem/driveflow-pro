@@ -1,6 +1,12 @@
 (function ($) {
     'use strict';
 
+    function dfEsc(v) {
+        return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) {
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+    }
+
     function showToast(message, isError) {
         $('.df-toast').remove();
         var $toast = $('<div class="df-toast"></div>').text(message);
@@ -317,7 +323,7 @@
                         var $alert = $('#df-conflict-alert');
 
                         if (data.conflict) {
-                            $alert.html('⚠️ <strong>Scheduling Conflict:</strong> ' + data.reason);
+                            $alert.html('⚠️ <strong>Scheduling Conflict:</strong> ' + dfEsc(data.reason));
                             $container.slideDown(200);
                         } else {
                             $container.slideUp(200);
@@ -491,8 +497,8 @@
 
                         var html = '<div style="background:#f8fafc;padding:16px;border-radius:8px;margin-bottom:20px;border:1px solid #e2e8f0;">';
                         html += '<div style="display:flex;justify-content:space-between;align-items:center;">';
-                        html += '<div><h3 style="margin:0 0 4px 0;font-size:18px;">' + p.name + '</h3>';
-                        html += '<div style="font-size:13px;color:#64748b;">📞 ' + (p.phone || 'N/A') + ' • ✉️ ' + (p.email || 'N/A') + ' • Permit: <strong>' + (p.license_number || 'N/A') + '</strong></div></div>';
+                        html += '<div><h3 style="margin:0 0 4px 0;font-size:18px;">' + dfEsc(p.name) + '</h3>';
+                        html += '<div style="font-size:13px;color:#64748b;">📞 ' + dfEsc(p.phone || 'N/A') + ' • ✉️ ' + dfEsc(p.email || 'N/A') + ' • Permit: <strong>' + dfEsc(p.license_number || 'N/A') + '</strong></div></div>';
                         html += '<div style="text-align:right;"><span style="font-size:22px;font-weight:800;color:' + (remaining > 0 ? '#2563eb' : '#16a34a') + ';">' + remaining + ' Left</span>';
                         html += '<div style="font-size:12px;color:#64748b;">' + completed + ' of ' + total + ' completed</div></div>';
                         html += '</div>';
@@ -510,10 +516,10 @@
                             html += '<thead style="background:#f1f5f9;"><tr><th style="padding:8px;text-align:left;">Lesson</th><th style="padding:8px;text-align:left;">Date & Time</th><th style="padding:8px;text-align:left;">Instructor</th><th style="padding:8px;text-align:left;">Plate</th><th style="padding:8px;text-align:left;">Status</th></tr></thead><tbody>';
                             p.sessions.forEach(function (s) {
                                 html += '<tr style="border-bottom:1px solid #f1f5f9;">';
-                                html += '<td style="padding:8px;"><strong>#' + s.session_number + '</strong> ' + (s.lesson_topic || 'Driving Lesson') + '</td>';
+                                html += '<td style="padding:8px;"><strong>#' + s.session_number + '</strong> ' + dfEsc(s.lesson_topic || 'Driving Lesson') + '</td>';
                                 html += '<td style="padding:8px;color:#64748b;">' + s.scheduled_start.substring(0, 16) + '</td>';
-                                html += '<td style="padding:8px;">' + (s.instructor_name || '—') + '</td>';
-                                html += '<td style="padding:8px;"><code>' + (s.plate_number || '—') + '</code></td>';
+                                html += '<td style="padding:8px;">' + dfEscdfEsc(s.instructor_name || '—') + '</td>';
+                                html += '<td style="padding:8px;"><code>' + dfEsc(s.plate_number || '—') + '</code></td>';
                                 html += '<td style="padding:8px;"><span class="df-badge df-badge-' + s.status + '">' + s.status.toUpperCase() + '</span></td>';
                                 html += '</tr>';
                             });
@@ -1164,12 +1170,12 @@
                             card.attr('data-start', s.scheduled_start);
                             card.attr('data-end', s.scheduled_end);
 
-                            var html = '<div class="df-event-title">#' + s.session_number + ' ' + (s.student_name || 'Student') + '</div>';
-                            html += '<div class="df-event-instructor">👤 ' + (s.instructor_name || 'Instructor') + '</div>';
+                            var html = '<div class="df-event-title">#' + s.session_number + ' ' + dfEsc(s.student_name || 'Student') + '</div>';
+                            html += '<div class="df-event-instructor">👤 ' + dfEsc(s.instructor_name || 'Instructor') + '</div>';
                             html += '<div class="df-event-footer">';
                             html += '<span style="color:#64748b;font-size:11px;">' + startTimeStr + '</span>';
                             if (s.plate_number) {
-                                html += '<div class="maryland-plate plate-sm" style="transform:scale(0.82);transform-origin:right center;" title="Maryland Plate: ' + s.plate_number + '"><span class="plate-number">' + s.plate_number + '</span></div>';
+                                html += '<div class="maryland-plate plate-sm" style="transform:scale(0.82);transform-origin:right center;" title="Maryland Plate: ' + dfEsc(s.plate_number) + '"><span class="plate-number">' + dfEsc(s.plate_number) + '</span></div>';
                             }
                             html += '</div>';
 
@@ -1270,6 +1276,218 @@
                             }
                         }
                     });
+                });
+
+                // ---- Drag a student / instructor / vehicle chip onto a session card to assign it (mouse + touch) ----
+                var draggedChip = null;
+
+                function chipOf($el) {
+                    return { type: $el.data('type'), id: $el.data('id'), name: String($el.data('name') || '') };
+                }
+
+                function assignToSession(sessionId, chip) {
+                    if (!sessionId || !chip || !chip.id) return;
+                    var nonce = window.DriveFlowAdmin ? window.DriveFlowAdmin.nonce : '';
+                    showToast('Assigning ' + chip.name + '...');
+                    $.ajax({
+                        url: ajaxurl,
+                        type: 'POST',
+                        data: { action: 'driveflow_assign_to_session', session_id: sessionId, assign_type: chip.type, entity_id: chip.id, nonce: nonce },
+                        success: function (res) {
+                            if (res && res.success) {
+                                showToast(res.data.message || 'Assigned.');
+                            } else {
+                                showToast((res && res.data && res.data.message) || 'Could not assign.', true);
+                            }
+                            if (typeof window.reloadCalendar === 'function') window.reloadCalendar();
+                        },
+                        error: function () {
+                            showToast('Server error while assigning.', true);
+                        }
+                    });
+                }
+
+                $('.df-chip').off('.dfassign')
+                    .on('dragstart.dfassign', function (e) {
+                        draggedSessionId = null; // a chip drag must never be treated as a session move
+                        draggedChip = chipOf($(this));
+                        e.originalEvent.dataTransfer.setData('text/plain', 'df-chip');
+                        e.originalEvent.dataTransfer.effectAllowed = 'copy';
+                    })
+                    .on('dragend.dfassign', function () {
+                        draggedChip = null;
+                        $('.df-event-card').removeClass('is-assign-over');
+                    });
+
+                $('.df-event-card')
+                    .on('dragover', function (e) {
+                        if (!draggedChip) return;
+                        e.preventDefault();
+                        e.stopPropagation();
+                        e.originalEvent.dataTransfer.dropEffect = 'copy';
+                        $(this).addClass('is-assign-over');
+                    })
+                    .on('dragleave', function () { $(this).removeClass('is-assign-over'); })
+                    .on('drop', function (e) {
+                        if (!draggedChip) return;
+                        e.preventDefault();
+                        e.stopPropagation(); // do not let the slot treat this as a reschedule
+                        $(this).removeClass('is-assign-over');
+                        var chip = draggedChip;
+                        draggedChip = null;
+                        assignToSession($(this).data('session-id'), chip);
+                    });
+
+                $('#df-chip-search').off('.dfassign').on('input.dfassign', function () {
+                    var q = String($(this).val() || '').toLowerCase();
+                    $('.df-chip').each(function () {
+                        $(this).toggle(!q || String($(this).data('name')).toLowerCase().indexOf(q) !== -1);
+                    });
+                });
+
+                // Touch / pen for chips: long-press a chip, drag onto a card, release. (bound once per chip element)
+                $('.df-chip').each(function () {
+                    if (this._dfTouch) return;
+                    this._dfTouch = true;
+                    var chipEl = this, timer = null, active = false, ghost = null, $over = $(), sx = 0, sy = 0;
+
+                    function cardAt(x, y) {
+                        var el = document.elementFromPoint(x, y);
+                        return el ? $(el).closest('.df-event-card') : $();
+                    }
+                    function cleanup() {
+                        clearTimeout(timer);
+                        timer = null;
+                        active = false;
+                        if (ghost && ghost.parentNode) ghost.parentNode.removeChild(ghost);
+                        ghost = null;
+                        $over.removeClass('is-assign-over');
+                        $over = $();
+                    }
+
+                    chipEl.addEventListener('touchstart', function (ev) {
+                        if (ev.touches.length !== 1) return;
+                        sx = ev.touches[0].clientX;
+                        sy = ev.touches[0].clientY;
+                        timer = setTimeout(function () {
+                            active = true;
+                            var r = chipEl.getBoundingClientRect();
+                            ghost = chipEl.cloneNode(true);
+                            ghost.style.cssText = 'position:fixed;z-index:100000;pointer-events:none;opacity:.9;box-shadow:0 8px 24px rgba(0,0,0,.35);left:' + r.left + 'px;top:' + r.top + 'px;';
+                            document.body.appendChild(ghost);
+                            if (navigator.vibrate) navigator.vibrate(15);
+                        }, 250);
+                    }, { passive: true });
+
+                    chipEl.addEventListener('touchmove', function (ev) {
+                        var t = ev.touches[0];
+                        if (!active) {
+                            if (Math.abs(t.clientX - sx) > 8 || Math.abs(t.clientY - sy) > 8) cleanup();
+                            return;
+                        }
+                        ev.preventDefault();
+                        if (ghost) {
+                            ghost.style.left = (t.clientX - ghost.offsetWidth / 2) + 'px';
+                            ghost.style.top = (t.clientY - 20) + 'px';
+                        }
+                        var $card = cardAt(t.clientX, t.clientY);
+                        if (!$card.is($over)) {
+                            $over.removeClass('is-assign-over');
+                            $over = $card.addClass('is-assign-over');
+                        }
+                    }, { passive: false });
+
+                    chipEl.addEventListener('touchend', function (ev) {
+                        var wasActive = active;
+                        var t = ev.changedTouches[0];
+                        var $card = wasActive ? cardAt(t.clientX, t.clientY) : $();
+                        cleanup();
+                        if (wasActive) {
+                            ev.preventDefault();
+                            if ($card.length) assignToSession($card.data('session-id'), chipOf($(chipEl)));
+                        }
+                    }, { passive: false });
+
+                    chipEl.addEventListener('touchcancel', cleanup, { passive: true });
+                });
+
+                // Touch / pen support: HTML5 drag & drop does not fire reliably on touch screens.
+                // Long-press a session card (~250ms), drag it onto a slot, release to reschedule (reuses the drop handler above).
+                $('.df-event-card').each(function () {
+                    var card = this, timer = null, active = false, ghost = null, $over = $(), sx = 0, sy = 0;
+
+                    function slotAt(x, y) {
+                        var el = document.elementFromPoint(x, y);
+                        return el ? $(el).closest('.df-cal-slot') : $();
+                    }
+                    function cleanup() {
+                        clearTimeout(timer);
+                        timer = null;
+                        active = false;
+                        if (ghost && ghost.parentNode) ghost.parentNode.removeChild(ghost);
+                        ghost = null;
+                        $over.removeClass('is-dragover');
+                        $over = $();
+                        $(card).removeClass('is-dragging');
+                    }
+
+                    card.addEventListener('touchstart', function (ev) {
+                        if (ev.touches.length !== 1) return;
+                        sx = ev.touches[0].clientX;
+                        sy = ev.touches[0].clientY;
+                        timer = setTimeout(function () {
+                            active = true;
+                            $draggedCard = $(card);
+                            draggedSessionId = $draggedCard.data('session-id');
+                            $draggedCard.addClass('is-dragging');
+                            var r = card.getBoundingClientRect();
+                            ghost = card.cloneNode(true);
+                            ghost.removeAttribute('draggable');
+                            ghost.style.cssText = 'position:fixed;z-index:100000;pointer-events:none;opacity:.9;box-shadow:0 8px 24px rgba(0,0,0,.35);' +
+                                'width:' + r.width + 'px;left:' + r.left + 'px;top:' + r.top + 'px;';
+                            document.body.appendChild(ghost);
+                            if (navigator.vibrate) navigator.vibrate(15);
+                        }, 250);
+                    }, { passive: true });
+
+                    card.addEventListener('touchmove', function (ev) {
+                        var t = ev.touches[0];
+                        if (!active) {
+                            // finger moved before the long-press fired: the user is scrolling, not dragging
+                            if (Math.abs(t.clientX - sx) > 8 || Math.abs(t.clientY - sy) > 8) cleanup();
+                            return;
+                        }
+                        ev.preventDefault();
+                        if (ghost) {
+                            ghost.style.left = (t.clientX - ghost.offsetWidth / 2) + 'px';
+                            ghost.style.top = (t.clientY - 20) + 'px';
+                        }
+                        var $slot = slotAt(t.clientX, t.clientY);
+                        if (!$slot.is($over)) {
+                            $over.removeClass('is-dragover');
+                            $over = $slot.addClass('is-dragover');
+                        }
+                        // auto-scroll the calendar horizontally near its edges
+                        var board = $(card).closest('.df-calendar-board')[0];
+                        if (board) {
+                            var br = board.getBoundingClientRect();
+                            if (t.clientX > br.right - 40) board.scrollLeft += 14;
+                            else if (t.clientX < br.left + 40) board.scrollLeft -= 14;
+                        }
+                    }, { passive: false });
+
+                    card.addEventListener('touchend', function (ev) {
+                        var wasActive = active;
+                        var t = ev.changedTouches[0];
+                        var $slot = wasActive ? slotAt(t.clientX, t.clientY) : $();
+                        cleanup();
+                        if (wasActive) {
+                            ev.preventDefault(); // no synthetic click after a drag
+                            if ($slot.length) $slot.trigger('drop');
+                        }
+                    }, { passive: false });
+
+                    card.addEventListener('touchcancel', cleanup, { passive: true });
                 });
 
                 // Double click empty slot or click empty slot button to schedule lesson prefilled

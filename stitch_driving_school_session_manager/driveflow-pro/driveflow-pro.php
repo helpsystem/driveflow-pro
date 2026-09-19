@@ -59,6 +59,7 @@ final class DriveFlow_Pro {
         add_action('wp_ajax_driveflow_get_student_profile', array($plugin, 'ajax_get_student_profile'));
         add_action('wp_ajax_driveflow_calendar_events', array($plugin, 'ajax_calendar_events'));
         add_action('wp_ajax_driveflow_reschedule_session', array($plugin, 'ajax_reschedule_session'));
+        add_action('wp_ajax_driveflow_assign_to_session', array($plugin, 'ajax_assign_to_session'));
         add_action('wp_ajax_driveflow_add_blocked_slot', array($plugin, 'ajax_add_blocked_slot'));
         add_action('wp_ajax_driveflow_delete_blocked_slot', array($plugin, 'ajax_delete_blocked_slot'));
         add_action('wp_ajax_driveflow_send_booking_link', array($plugin, 'ajax_send_booking_link'));
@@ -67,14 +68,12 @@ final class DriveFlow_Pro {
         add_action('wp_ajax_driveflow_student_self_book', array($plugin, 'ajax_student_self_book'));
         add_action('wp_ajax_nopriv_driveflow_student_self_book', array($plugin, 'ajax_student_self_book'));
         add_action('wp_ajax_driveflow_submit_evaluation', array($plugin, 'ajax_submit_evaluation'));
-        add_action('wp_ajax_nopriv_driveflow_submit_evaluation', array($plugin, 'ajax_submit_evaluation'));
         add_action('wp_ajax_driveflow_get_session_details', array($plugin, 'ajax_get_session_details'));
         add_action('wp_ajax_driveflow_update_session', array($plugin, 'ajax_update_session'));
         add_action('wp_ajax_driveflow_delete_session', array($plugin, 'ajax_delete_session'));
         add_action('wp_ajax_driveflow_get_tv_sessions', array($plugin, 'ajax_get_tv_sessions'));
         add_action('wp_ajax_nopriv_driveflow_get_tv_sessions', array($plugin, 'ajax_get_tv_sessions'));
         add_action('wp_ajax_driveflow_get_instructor_today_sessions', array($plugin, 'ajax_get_instructor_today_sessions'));
-        add_action('wp_ajax_nopriv_driveflow_get_instructor_today_sessions', array($plugin, 'ajax_get_instructor_today_sessions'));
         add_action('wp_ajax_driveflow_admin_control_tv', array($plugin, 'ajax_admin_control_tv'));
         add_action('wp_ajax_driveflow_update_student', array($plugin, 'ajax_update_student'));
         add_action('wp_ajax_driveflow_get_entity', array($plugin, 'ajax_get_entity'));
@@ -733,6 +732,7 @@ final class DriveFlow_Pro {
         $css_ver = DRIVEFLOW_PRO_VERSION . '.' . (file_exists($admin_css) ? filemtime($admin_css) : time());
         $js_ver  = DRIVEFLOW_PRO_VERSION . '.' . (file_exists($admin_js) ? filemtime($admin_js) : time());
         wp_enqueue_style('driveflow-admin-css', DRIVEFLOW_PRO_URL . 'assets/admin.css', array(), $css_ver);
+        wp_enqueue_style('driveflow-responsive', DRIVEFLOW_PRO_URL . 'assets/responsive.css', array('driveflow-admin-css'), DRIVEFLOW_PRO_VERSION);
         wp_enqueue_script('driveflow-admin', DRIVEFLOW_PRO_URL . 'assets/admin.js', array('jquery'), $js_ver, true);
         wp_localize_script('driveflow-admin', 'DriveFlowAdmin', array(
             'ajaxurl' => admin_url('admin-ajax.php'),
@@ -749,6 +749,7 @@ final class DriveFlow_Pro {
         $css_ver = DRIVEFLOW_PRO_VERSION . '.' . (file_exists($front_css) ? filemtime($front_css) : time());
         $js_ver  = DRIVEFLOW_PRO_VERSION . '.' . (file_exists($front_js) ? filemtime($front_js) : time());
         wp_enqueue_style('driveflow-pro', DRIVEFLOW_PRO_URL . 'assets/frontend.css', array(), $css_ver);
+        wp_enqueue_style('driveflow-responsive', DRIVEFLOW_PRO_URL . 'assets/responsive.css', array('driveflow-pro'), DRIVEFLOW_PRO_VERSION);
         wp_enqueue_script('driveflow-pro', DRIVEFLOW_PRO_URL . 'assets/frontend.js', array('jquery'), $js_ver, true);
         $settings = get_option(self::OPTION_KEY, array());
         wp_localize_script('driveflow-pro', 'DriveFlowPro', array(
@@ -1388,8 +1389,8 @@ final class DriveFlow_Pro {
     public function calendar_page() {
         if (!current_user_can('manage_options')) return;
         global $wpdb;
-        $instructors = $wpdb->get_results("SELECT name, phone FROM {$wpdb->prefix}driveflow_instructors WHERE status = 'active' ORDER BY name ASC", ARRAY_A);
-        $vehicles = $wpdb->get_results("SELECT plate_number, model FROM {$wpdb->prefix}driveflow_vehicles WHERE status = 'active' ORDER BY plate_number ASC", ARRAY_A);
+        $instructors = $wpdb->get_results("SELECT id, name, phone FROM {$wpdb->prefix}driveflow_instructors WHERE status = 'active' ORDER BY name ASC", ARRAY_A);
+        $vehicles = $wpdb->get_results("SELECT id, plate_number, model FROM {$wpdb->prefix}driveflow_vehicles WHERE status = 'active' ORDER BY plate_number ASC", ARRAY_A);
         $students = $wpdb->get_results("SELECT id, name, phone, email, total_sessions, completed_sessions, (total_sessions - completed_sessions) as remaining_sessions FROM {$wpdb->prefix}driveflow_students WHERE status = 'active' ORDER BY name ASC", ARRAY_A);
         include DRIVEFLOW_PRO_DIR . 'templates/admin-calendar.php';
     }
@@ -1483,6 +1484,76 @@ final class DriveFlow_Pro {
             'start_date'  => $start_date,
             'end_date'    => $end_date,
         ));
+    }
+
+    /** Calendar drag & drop: assign a student, instructor or vehicle to an existing session (admin only). */
+    public function ajax_assign_to_session() {
+        check_ajax_referer('driveflow_admin_nonce', 'nonce');
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(array('message' => 'Unauthorized.'), 403);
+        }
+
+        global $wpdb;
+        $session_id = absint($_POST['session_id'] ?? 0);
+        $type       = sanitize_key($_POST['assign_type'] ?? '');
+        $entity_id  = absint($_POST['entity_id'] ?? 0);
+        if (!$session_id || !$entity_id || !in_array($type, array('student', 'instructor', 'vehicle'), true)) {
+            wp_send_json_error(array('message' => 'Missing or invalid assignment parameters.'));
+        }
+
+        $session = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$this->table()} WHERE id = %d", $session_id), ARRAY_A);
+        if (!$session) {
+            wp_send_json_error(array('message' => 'Session not found.'));
+        }
+        if (!in_array($session['status'], array('upcoming', 'active'), true)) {
+            wp_send_json_error(array('message' => 'Only upcoming or active sessions can be changed.'));
+        }
+
+        $instructor = $session['instructor_name'];
+        $plate      = $session['plate_number'];
+        $update     = array('updated_at' => current_time('mysql'));
+        $label      = '';
+
+        if ('student' === $type) {
+            $row = $wpdb->get_row($wpdb->prepare("SELECT id, name FROM {$wpdb->prefix}driveflow_students WHERE id = %d", $entity_id), ARRAY_A);
+            if (!$row) {
+                wp_send_json_error(array('message' => 'Student not found.'));
+            }
+            $update['student_id']   = (int) $row['id'];
+            $update['student_name'] = $row['name'];
+            $label = 'Student ' . $row['name'];
+        } elseif ('instructor' === $type) {
+            $row = $wpdb->get_row($wpdb->prepare("SELECT id, name FROM {$wpdb->prefix}driveflow_instructors WHERE id = %d AND status = 'active'", $entity_id), ARRAY_A);
+            if (!$row) {
+                wp_send_json_error(array('message' => 'Instructor not found or inactive.'));
+            }
+            $instructor = $row['name'];
+            $update['instructor_name'] = $row['name'];
+            $label = 'Instructor ' . $row['name'];
+        } else {
+            $row = $wpdb->get_row($wpdb->prepare("SELECT id, plate_number FROM {$wpdb->prefix}driveflow_vehicles WHERE id = %d AND status = 'active'", $entity_id), ARRAY_A);
+            if (!$row) {
+                wp_send_json_error(array('message' => 'Vehicle not found or inactive.'));
+            }
+            $plate = $row['plate_number'];
+            $update['plate_number'] = $row['plate_number'];
+            $update['vehicle_id']   = (int) $row['id'];
+            $label = 'Vehicle ' . $row['plate_number'];
+        }
+
+        // Instructor / vehicle changes must not create double-bookings (this session is excluded from the check).
+        if ('student' !== $type) {
+            $check = DriveFlow_Availability_Engine::check_collision($instructor, $plate, $session['scheduled_start'], $session['scheduled_end'], $session_id);
+            if (!empty($check['conflict'])) {
+                wp_send_json_error(array('message' => $check['reason']));
+            }
+        }
+
+        $wpdb->update($this->table(), $update, array('id' => $session_id));
+        DriveFlow_Wappointment_Sync::push_session_to_wapp($session_id);
+        self::notify_calendar_change();
+
+        wp_send_json_success(array('message' => $label . ' assigned to session #' . $session_id . '.'));
     }
 
     public function ajax_reschedule_session() {
@@ -1603,6 +1674,9 @@ final class DriveFlow_Pro {
     }
 
     public function ajax_get_magic_slots() {
+        if (!self::throttle('magic_slots', 60, 10 * MINUTE_IN_SECONDS)) {
+            wp_send_json_error(array('message' => 'Too many requests. Please try again later.'), 429);
+        }
         $token = sanitize_text_field(wp_unslash($_POST['token'] ?? ''));
         $date = sanitize_text_field(wp_unslash($_POST['date'] ?? current_time('Y-m-d')));
         $instructor = sanitize_text_field(wp_unslash($_POST['instructor'] ?? ''));
@@ -1637,6 +1711,9 @@ final class DriveFlow_Pro {
     }
 
     public function ajax_student_self_book() {
+        if (!self::throttle('self_book', 10, 10 * MINUTE_IN_SECONDS)) {
+            wp_send_json_error(array('message' => 'Too many requests. Please try again later.'), 429);
+        }
         $token = sanitize_text_field(wp_unslash($_POST['token'] ?? ''));
         $start_time = sanitize_text_field(wp_unslash($_POST['slot_start'] ?? ''));
         $end_time = sanitize_text_field(wp_unslash($_POST['slot_end'] ?? ''));
@@ -1744,6 +1821,9 @@ final class DriveFlow_Pro {
     }
 
     public function ajax_submit_instructor_onboarding() {
+        if (!self::throttle('onboarding', 10, 10 * MINUTE_IN_SECONDS)) {
+            wp_send_json_error(array('message' => 'Too many requests. Please try again later.'), 429);
+        }
         check_ajax_referer('driveflow_instructor_onboarding', 'onboarding_nonce');
 
         $token = sanitize_text_field(wp_unslash($_POST['token'] ?? ''));
@@ -2067,6 +2147,11 @@ final class DriveFlow_Pro {
     }
 
     public function ajax_submit_evaluation() {
+        if (!self::throttle('evaluation', 30, 10 * MINUTE_IN_SECONDS)) {
+            wp_send_json_error(array('message' => 'Too many requests. Please try again later.'), 429);
+        }
+        list($is_admin, $me) = $this->instructor_ajax_context();
+        check_ajax_referer('driveflow_instructor_form', 'df_nonce');
         global $wpdb;
         $student_name = sanitize_text_field(wp_unslash($_POST['student_name'] ?? ''));
         $instructor_name = sanitize_text_field(wp_unslash($_POST['instructor_name'] ?? ''));
@@ -2078,10 +2163,16 @@ final class DriveFlow_Pro {
         $scheduled_end = sanitize_text_field(wp_unslash($_POST['scheduled_end'] ?? date('Y-m-d H:i:s', strtotime($scheduled_start . ' +2 hours'))));
         $session_id = absint($_POST['session_id'] ?? 0);
         $final_evaluation = sanitize_text_field(wp_unslash($_POST['final_evaluation'] ?? 'Pass'));
-        $instructor_signature = sanitize_textarea_field(wp_unslash($_POST['instructor_signature_data'] ?? ''));
-        $student_signature = sanitize_textarea_field(wp_unslash($_POST['student_signature_data'] ?? ''));
-        $selfie = sanitize_textarea_field(wp_unslash($_POST['selfie'] ?? ''));
+        $instructor_signature = self::clean_image_data_url($_POST['instructor_signature_data'] ?? '', 300 * KB_IN_BYTES);
+        $student_signature = self::clean_image_data_url($_POST['student_signature_data'] ?? '', 300 * KB_IN_BYTES);
+        $selfie = self::clean_image_data_url($_POST['selfie'] ?? '', 1536 * KB_IN_BYTES);
         $instructor_notes = sanitize_textarea_field(wp_unslash($_POST['instructor_notes'] ?? ''));
+
+        if (!$is_admin) {
+            // Instructors always submit as themselves; posted identity fields are ignored.
+            $instructor_name    = $me['name'];
+            $instructor_cert_no = $me['license_number'];
+        }
 
         if (empty($student_name)) {
             wp_send_json_error(array('message' => 'Student name is required.'));
@@ -2092,6 +2183,16 @@ final class DriveFlow_Pro {
             $ins_status = $wpdb->get_var($wpdb->prepare("SELECT status FROM {$wpdb->prefix}driveflow_instructors WHERE name = %s", $instructor_name));
             if ($ins_status && 'inactive' === $ins_status) {
                 wp_send_json_error(array('message' => "Instructor '{$instructor_name}' is currently deactivated by administration and cannot submit session evaluations."));
+            }
+        }
+
+        // Only open sessions of the same instructor may be completed/overwritten (protects finished records).
+        if ($session_id) {
+            $existing = $wpdb->get_row($wpdb->prepare("SELECT status, instructor_name FROM {$this->table()} WHERE id = %d", $session_id), ARRAY_A);
+            if (!$existing
+                || !in_array($existing['status'], array('upcoming', 'active'), true)
+                || ('' !== (string) $existing['instructor_name'] && 0 !== strcasecmp($existing['instructor_name'], $instructor_name))) {
+                wp_send_json_error(array('message' => 'This session cannot be updated.'), 403);
             }
         }
 
@@ -2816,7 +2917,7 @@ final class DriveFlow_Pro {
         $today = current_time('Y-m-d');
         $rows = $wpdb->get_results(
             "SELECT s.id, s.student_name, s.instructor_name, s.plate_number, s.session_number, s.lesson_topic, s.scheduled_start, s.scheduled_end, s.status,
-                    COALESCE(NULLIF(v.current_fuel_level, 0), 75) AS fuel
+                    NULLIF(v.current_fuel_level, 0) AS fuel
              FROM {$table} s
              LEFT JOIN {$wpdb->prefix}driveflow_vehicles v ON (s.vehicle_id = v.id OR (s.plate_number != '' AND s.plate_number = v.plate_number))
              WHERE DATE(s.scheduled_start) = '{$today}' 
@@ -2859,7 +2960,11 @@ final class DriveFlow_Pro {
     public function ajax_get_instructor_today_sessions() {
         global $wpdb;
         $today = current_time('Y-m-d');
+        list($is_admin, $me) = $this->instructor_ajax_context();
         $instructor_name = sanitize_text_field(wp_unslash($_GET['instructor_name'] ?? $_POST['instructor_name'] ?? ''));
+        if (!$is_admin) {
+            $instructor_name = $me['name'];
+        }
         
         $table = $this->table();
         $query = "SELECT id, student_name, instructor_name, plate_number, session_number, lesson_topic, scheduled_start, scheduled_end, status 
@@ -3465,6 +3570,20 @@ final class DriveFlow_Pro {
         if ($rendered) return '';
         $rendered = true;
 
+        if (!is_user_logged_in()) {
+            return $this->instructor_login_card();
+        }
+        $is_admin_view      = current_user_can('manage_options');
+        $current_instructor = $this->get_current_instructor();
+        if (!$is_admin_view && (!$current_instructor || 'active' !== $current_instructor['status'] || !current_user_can('edit_posts'))) {
+            return '<div class="df-login-card" style="max-width:420px;margin:24px auto;padding:20px;border:1px solid #fecaca;border-radius:12px;background:#fef2f2;color:#991b1b;">Your account is not linked to an active instructor profile. Please contact the school administrator.</div>';
+        }
+        $locked   = !$is_admin_view && $current_instructor;
+        $df_nonce = wp_create_nonce('driveflow_instructor_form');
+        if (!defined('DONOTCACHEPAGE')) {
+            define('DONOTCACHEPAGE', true);
+        }
+
         global $wpdb;
         $brand = $this->branding();
         $instructors = $wpdb->get_results("SELECT id, name, phone, email, license_number FROM {$wpdb->prefix}driveflow_instructors WHERE status = 'active' ORDER BY name ASC", ARRAY_A);
@@ -3477,6 +3596,13 @@ final class DriveFlow_Pro {
              ORDER BY scheduled_start ASC",
             ARRAY_A
         );
+
+        if ($locked) {
+            $instructors    = array($current_instructor);
+            $today_sessions = array_values(array_filter((array) $today_sessions, function ($row) use ($current_instructor) {
+                return 0 === strcasecmp((string) $row['instructor_name'], (string) $current_instructor['name']);
+            }));
+        }
 
         ob_start();
         include DRIVEFLOW_PRO_DIR . 'templates/instructor-form.php';
@@ -3494,7 +3620,7 @@ final class DriveFlow_Pro {
         $today = current_time('Y-m-d');
         $today_sessions = $wpdb->get_results(
             "SELECT s.id, s.student_name, s.instructor_name, s.plate_number, s.session_number, s.lesson_topic, s.scheduled_start, s.scheduled_end, s.status,
-                    COALESCE(NULLIF(v.current_fuel_level, 0), 75) AS fuel
+                    NULLIF(v.current_fuel_level, 0) AS fuel
              FROM {$this->table()} s
              LEFT JOIN {$wpdb->prefix}driveflow_vehicles v ON (s.vehicle_id = v.id OR (s.plate_number != '' AND s.plate_number = v.plate_number))
              WHERE DATE(s.scheduled_start) = '{$today}' 
@@ -3661,12 +3787,13 @@ final class DriveFlow_Pro {
 <html lang="en" dir="ltr" class="driveflow-standalone-portal">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title><?php echo esc_html($title); ?> — <?php echo esc_html($brand['name']); ?></title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Barlow+Semi+Condensed:wght@700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="<?php echo esc_url($front_css); ?>">
+    <link rel="stylesheet" href="<?php echo esc_url(DRIVEFLOW_PRO_URL . 'assets/responsive.css?ver=' . DRIVEFLOW_PRO_VERSION); ?>">
     <style>
         html, body {
             margin: 0 !important;
@@ -3716,12 +3843,13 @@ final class DriveFlow_Pro {
 <html lang="en" dir="ltr" class="dfv2-kiosk-mode">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title><?php echo esc_html($brand['name']); ?> — Live TV Lobby Board</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800&family=Barlow+Semi+Condensed:wght@700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="<?php echo esc_url($front_css); ?>">
+    <link rel="stylesheet" href="<?php echo esc_url(DRIVEFLOW_PRO_URL . 'assets/responsive.css?ver=' . DRIVEFLOW_PRO_VERSION); ?>">
     <style>
         html, body {
             margin: 0 !important;
@@ -3769,7 +3897,9 @@ final class DriveFlow_Pro {
                 'user_password' => $_POST['pwd'] ?? '',
                 'remember'      => !empty($_POST['rememberme']),
             );
-            $user = wp_signon($creds, is_ssl());
+            $user = self::throttle('admin_login', 10, 15 * MINUTE_IN_SECONDS)
+                ? wp_signon($creds, is_ssl())
+                : new WP_Error('too_many_attempts', 'Too many login attempts. Please try again in 15 minutes.');
             if (is_wp_error($user)) {
                 $login_error = $user->get_error_message();
             } else {
@@ -3792,12 +3922,13 @@ final class DriveFlow_Pro {
 <html lang="en" dir="ltr" class="driveflow-admin-portal-login">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title><?php echo esc_html($brand['name']); ?> — Executive Admin Portal</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Barlow+Semi+Condensed:wght@700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="<?php echo esc_url($front_css); ?>">
+    <link rel="stylesheet" href="<?php echo esc_url(DRIVEFLOW_PRO_URL . 'assets/responsive.css?ver=' . DRIVEFLOW_PRO_VERSION); ?>">
     <style>
         html, body {
             margin: 0; padding: 0; min-height: 100vh;
@@ -3899,7 +4030,8 @@ final class DriveFlow_Pro {
     }
 
     public function can_write($request) {
-        return (is_user_logged_in() && current_user_can('edit_posts')) || wp_verify_nonce($request->get_header('X-WP-Nonce'), 'wp_rest');
+        // A wp_rest nonce is public for anonymous visitors; never accept it as authorization on its own.
+        return is_user_logged_in() && current_user_can('edit_posts');
     }
 
     public function can_delete($request) {
@@ -3918,6 +4050,79 @@ final class DriveFlow_Pro {
         }
         // Allow public read of active TV board schedule
         return true;
+    }
+
+    /** Instructor profile linked to the logged-in WP user (user_id first, then account e-mail). */
+    public function get_current_instructor() {
+        if (!is_user_logged_in()) {
+            return null;
+        }
+        global $wpdb;
+        $user  = wp_get_current_user();
+        $table = $wpdb->prefix . 'driveflow_instructors';
+        $cols  = 'id, name, license_number, email, phone, photo_url, status';
+        $row   = $wpdb->get_row($wpdb->prepare("SELECT {$cols} FROM {$table} WHERE user_id = %d LIMIT 1", $user->ID), ARRAY_A);
+        if (!$row && $user->user_email && current_user_can('edit_posts')) {
+            $row = $wpdb->get_row($wpdb->prepare("SELECT {$cols} FROM {$table} WHERE email = %s LIMIT 1", $user->user_email), ARRAY_A);
+        }
+        return $row ?: null;
+    }
+
+    /** Auth gate for the instructor field app AJAX calls. Returns array(is_admin, instructor) or ends with a JSON error. */
+    private function instructor_ajax_context() {
+        if (!is_user_logged_in()) {
+            wp_send_json_error(array('message' => 'Please log in to continue.', 'code' => 'login_required'), 401);
+        }
+        $is_admin   = current_user_can('manage_options');
+        $instructor = $this->get_current_instructor();
+        if (!$is_admin && (!$instructor || 'active' !== $instructor['status'] || !current_user_can('edit_posts'))) {
+            wp_send_json_error(array('message' => 'Your account is not linked to an active instructor profile.'), 403);
+        }
+        return array($is_admin, $instructor);
+    }
+
+    /** Login card shown instead of the instructor app to visitors who are not logged in. */
+    private function instructor_login_card() {
+        if (!defined('DONOTCACHEPAGE')) {
+            define('DONOTCACHEPAGE', true);
+        }
+        $form = wp_login_form(array(
+            'echo'           => false,
+            'redirect'       => home_url(add_query_arg(array())),
+            'label_username' => 'Username or Email',
+            'label_log_in'   => 'Log In',
+            'remember'       => true,
+        ));
+        return '<style>.df-login-card{box-sizing:border-box;width:100%;max-width:420px;margin:24px auto;padding:24px 20px;border:1px solid #cbd5e1;border-radius:14px;background:#fff;font-family:inherit}'
+            . '.df-login-card h3{margin:0 0 6px;font-size:20px}.df-login-card p{margin:0 0 16px;color:#64748b;font-size:14px}'
+            . '.df-login-card input[type=text],.df-login-card input[type=password]{box-sizing:border-box;width:100%;min-height:44px;padding:10px 12px;font-size:16px;border:1px solid #cbd5e1;border-radius:8px}'
+            . '.df-login-card input[type=submit]{width:100%;min-height:48px;font-size:16px;border:0;border-radius:8px;background:#0f766e;color:#fff;cursor:pointer}'
+            . '.df-login-card .login-username,.df-login-card .login-password,.df-login-card .login-remember,.df-login-card .login-submit{margin:0 0 12px}.df-login-card label{display:block;margin-bottom:4px;font-size:14px}</style>'
+            . '<div class="df-login-card"><h3>Instructor Login</h3><p>Sign in to open the in-car evaluation form. Your instructor details are filled in automatically.</p>' . $form . '</div>';
+    }
+
+    /** Per-IP throttle for public endpoints (REMOTE_ADDR only). Returns false once the limit is exceeded. */
+    public static function throttle($bucket, $max, $window) {
+        $ip   = isset($_SERVER['REMOTE_ADDR']) ? (string) $_SERVER['REMOTE_ADDR'] : 'unknown';
+        $key  = 'df_thr_' . md5($bucket . '|' . $ip);
+        $hits = (int) get_transient($key);
+        if ($hits >= $max) {
+            return false;
+        }
+        set_transient($key, $hits + 1, $window);
+        return true;
+    }
+
+    /** Public forms may only send bounded base64 image data-URLs; anything else is rejected. */
+    private static function clean_image_data_url($raw, $max_bytes) {
+        $raw = is_string($raw) ? wp_unslash($raw) : '';
+        if ('' === $raw) {
+            return '';
+        }
+        if (strlen($raw) > $max_bytes || !preg_match('#^data:image/(png|jpe?g|webp);base64,[A-Za-z0-9+/=]+$#', $raw)) {
+            wp_send_json_error(array('message' => 'Image data is invalid or too large.'), 413);
+        }
+        return $raw;
     }
 
     public function table() {

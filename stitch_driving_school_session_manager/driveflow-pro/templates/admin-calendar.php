@@ -95,6 +95,36 @@ $now = current_time('timestamp');
     </div>
 
     <!-- Visual Calendar Grid Container -->
+    <?php if (!empty($students) || !empty($instructors) || !empty($vehicles)) : ?>
+    <details class="df-assign-tray" id="df-assign-tray" open>
+        <summary>🧲 Assign by drag &amp; drop — drag a chip onto a lesson card</summary>
+        <input type="search" id="df-chip-search" class="df-select-sm" placeholder="Filter chips…" aria-label="Filter chips">
+        <div class="df-chip-groups">
+            <?php if (!empty($instructors)) : ?>
+            <div class="df-chip-group"><strong>Instructors</strong>
+                <?php foreach ($instructors as $ins) : if (empty($ins['id'])) continue; ?>
+                    <span class="df-chip df-chip--instructor" draggable="true" role="button" tabindex="0" data-type="instructor" data-id="<?php echo (int) $ins['id']; ?>" data-name="<?php echo esc_attr($ins['name']); ?>">👤 <?php echo esc_html($ins['name']); ?></span>
+                <?php endforeach; ?>
+            </div>
+            <?php endif; ?>
+            <?php if (!empty($vehicles)) : ?>
+            <div class="df-chip-group"><strong>Vehicles</strong>
+                <?php foreach ($vehicles as $veh) : if (empty($veh['id'])) continue; ?>
+                    <span class="df-chip df-chip--vehicle" draggable="true" role="button" tabindex="0" data-type="vehicle" data-id="<?php echo (int) $veh['id']; ?>" data-name="<?php echo esc_attr($veh['plate_number']); ?>">🚗 <?php echo esc_html($veh['plate_number']); ?></span>
+                <?php endforeach; ?>
+            </div>
+            <?php endif; ?>
+            <?php if (!empty($students)) : ?>
+            <div class="df-chip-group"><strong>Students</strong>
+                <?php foreach (array_slice($students, 0, 300) as $stu) : ?>
+                    <span class="df-chip df-chip--student" draggable="true" role="button" tabindex="0" data-type="student" data-id="<?php echo (int) $stu['id']; ?>" data-name="<?php echo esc_attr($stu['name']); ?>">🎓 <?php echo esc_html($stu['name']); ?></span>
+                <?php endforeach; ?>
+            </div>
+            <?php endif; ?>
+        </div>
+    </details>
+    <?php endif; ?>
+
     <div class="df-calendar-board" id="df-calendar-board">
         <div class="df-cal-loading-overlay" id="df-cal-loading">
             <div class="df-spinner"></div>

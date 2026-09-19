@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sam's Driving School LLC — Live Lobby Board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  /* 1rem = 16px at 1920px wide, scales with the TV/browser width */
+  html { font-size: clamp(8px, 0.8334vw, 40px); }
+
+  :root {
+    --bg: #050a17;
+    --panel: #0b1326;
+    --panel-2: #0e172c;
+    --line: #1a2642;
+    --text: #f4f7ff;
+    --muted: #93a0bd;
+
+    --green: #22ff88;
+    --lime: #a6ff3d;
+    --yellow: #ffd60a;
+    --amber: #ffb020;
+    --red: #ff3b57;
+    --blue: #4d8dff;
+
+    --font-display: 'Roboto Condensed', 'Arial Narrow', 'Helvetica Neue', Arial, sans-serif;
+    --font-body: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body { height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 1.6rem 2.2rem 0;
+    gap: 1.6rem;
+    background-image:
+      radial-gradient(1px 1px at 12% 22%, #fff8 50%, transparent 51%),
+      radial-gradient(1px 1px at 78% 14%, #fff6 50%, transparent 51%),
+      radial-gradient(1.5px 1.5px at 35% 68%, #fff5 50%, transparent 51%),
+      radial-gradient(1px 1px at 90% 72%, #fff7 50%, transparent 51%),
+      radial-gradient(1px 1px at 55% 40%, #fff5 50%, transparent 51%),
+      radial-gradient(1.5px 1.5px at 6% 84%, #fff6 50%, transparent 51%),
+      radial-gradient(ellipse at 50% 0%, #0d1a38 0%, var(--bg) 60%);
+  }
+
+  /* ---------- Header ---------- */
+  .top {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    background: linear-gradient(180deg, #0c1428, #09101f);
+    border: 1px solid var(--line);
+    border-radius: 1.1rem;
+    padding: 1rem 1.6rem;
+  }
+  .brand { display: flex; align-items: center; gap: 1.2rem; }
+  .brand-icon {
+    width: 4.2rem; height: 4.2rem; border-radius: 0.9rem;
+    display: grid; place-items: center;
+    background: #111a30; border: 1px solid var(--line); color: #b8c3dc;
+  }
+  .brand-icon svg { width: 2.4rem; height: 2.4rem; }
+  .brand h1 {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: 2.5rem; line-height: 1.05; letter-spacing: 0.01em; text-transform: uppercase;
+  }
+  .brand p { color: var(--muted); font-size: 1.15rem; margin-top: 0.25rem; }
+
+  .live-pill {
+    display: inline-flex; align-items: center; gap: 0.7rem;
+    font-family: var(--font-display); font-weight: 700; font-size: 1.5rem; letter-spacing: 0.02em;
+    color: var(--green); text-transform: uppercase;
+    padding: 0.6rem 1.5rem; border-radius: 99rem;
+    border: 2px solid var(--green);
+    background: rgba(34,255,136,.1);
+    box-shadow: 0 0 1.4rem rgba(34,255,136,.35), inset 0 0 0.9rem rgba(34,255,136,.15);
+  }
+  .live-dot { width: 0.8rem; height: 0.8rem; border-radius: 50%; background: var(--green); box-shadow: 0 0 0.8rem var(--green); animation: blink 1.6s ease-in-out infinite; }
+
+  .clock-wrap { display: flex; align-items: center; justify-content: flex-end; gap: 1.6rem; }
+  .clock { text-align: right; }
+  .clock .time {
+    font-family: var(--font-display); font-weight: 700; font-size: 3.4rem; line-height: 1;
+    color: var(--yellow); text-shadow: 0 0 1.2rem rgba(255,214,10,.45);
+    font-variant-numeric: tabular-nums;
+  }
+  .clock .date { color: var(--muted); font-size: 1.15rem; margin-top: 0.35rem; }
+  .tools { display: flex; gap: 0.8rem; }
+  .tool {
+    width: 3.6rem; height: 3.6rem; border-radius: 0.8rem; cursor: pointer;
+    display: grid; place-items: center; color: #b8c3dc;
+    background: #111a30; border: 1px solid var(--line);
+  }
+  .tool:hover, .tool:focus-visible { border-color: #3a4c7a; color: #fff; outline: none; }
+  .tool svg { width: 1.7rem; height: 1.7rem; }
+  .tool.off { opacity: .45; }
+
+  /* ---------- Cards ---------- */
+  .stage { flex: 1; min-height: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.2rem; align-items: stretch; padding: 0.4rem 0.2rem; transition: opacity .45s ease; }
+  .stage.fade { opacity: 0; }
+
+  .card {
+    --c: var(--green);          /* neon color */
+    --time: var(--yellow);      /* time text color */
+    --alpha: 1;
+    position: relative;
+    display: flex; flex-direction: column;
+    border-radius: 1.3rem;
+    border: 2px solid var(--c);
+    background: linear-gradient(180deg, #0e1a2c 0%, #0a1220 100%);
+    box-shadow: 0 0 1.6rem color-mix(in srgb, var(--c) 45%, transparent), inset 0 0 1.6rem color-mix(in srgb, var(--c) 10%, transparent);
+    overflow: hidden;
+  }
+
+  .card-head {
+    display: flex; flex-direction: column; align-items: center; gap: 0.9rem;
+    padding: 1.2rem 1.3rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--c) 45%, transparent);
+  }
+  .head-top { display: flex; align-items: center; justify-content: space-between; gap: 0.8rem; width: 100%; }
+
+  /* Fuel gauge next to the plate: >=50% green, 25–49% yellow, <25% red */
+  .fuel {
+    --f: var(--green);
+    flex: none; width: 11rem; height: 5.4rem; padding: 0 0.8rem;
+    display: flex; flex-direction: column; justify-content: center; gap: 0.5rem;
+    border-radius: 0.7rem; background: #060c18; color: var(--f);
+    border: 1px solid color-mix(in srgb, var(--f) 45%, transparent);
+    box-shadow: 0 0 0.9rem color-mix(in srgb, var(--f) 30%, transparent);
+  }
+  .fuel.mid { --f: var(--yellow); }
+  .fuel.low { --f: var(--red); }
+  .fuel-top { display: flex; align-items: center; justify-content: space-between; }
+  .fuel-top svg { width: 1.5rem; height: 1.5rem; }
+  .fuel-pct { font-family: var(--font-display); font-weight: 700; font-size: 1.8rem; line-height: 1; font-variant-numeric: tabular-nums; }
+  .fuel-bar { display: grid; grid-template-columns: repeat(10, 1fr); gap: 0.2rem; }
+  .fuel-bar i { display: block; height: 0.9rem; border-radius: 0.15rem; background: #1b2540; }
+  .fuel-bar i.on { background: var(--f); box-shadow: 0 0 0.5rem var(--f); }
+  .fuel-scale { display: flex; justify-content: space-between; font-family: var(--font-display); font-weight: 500; font-size: 0.8rem; line-height: 1; letter-spacing: 0.04em; color: #6d7893; }
+  .fuel.low .fuel-pct, .fuel.low .fuel-top svg { animation: blink 1s ease-in-out infinite; }
+
+  /* Maryland plate */
+  .plate {
+    width: 15.5rem; height: 5.4rem; border-radius: 0.6rem; position: relative; flex: none;
+    background: linear-gradient(180deg, #ffffff, #dfe4ee);
+    box-shadow: 0 0.2rem 0.6rem rgba(0,0,0,.6), inset 0 0 0 0.16rem #c9d0de;
+    display: flex; align-items: flex-end; justify-content: center; padding-bottom: 0.3rem;
+    font-family: var(--font-display); font-weight: 700; color: #0f1c4d;
+  }
+  .plate .state {
+    position: absolute; top: 0.3rem; left: 0; right: 0; text-align: center;
+    font-size: 0.95rem; letter-spacing: 0.06em; color: #b0141e; text-transform: uppercase;
+  }
+  .plate .num { font-size: 3.3rem; line-height: 1; letter-spacing: 0.03em; }
+  .plate::before, .plate::after {
+    content: ''; position: absolute; top: 0.45rem; width: 0.5rem; height: 0.5rem; border-radius: 50%; background: #222;
+  }
+  .plate::before { left: 0.7rem; } .plate::after { right: 0.7rem; }
+
+  .badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; letter-spacing: 0.04em; text-transform: uppercase;
+    color: var(--c);
+    padding: 0.45rem 1rem; border-radius: 99rem;
+    border: 1.5px solid var(--c);
+    background: color-mix(in srgb, var(--c) 12%, transparent);
+    box-shadow: 0 0 0.9rem color-mix(in srgb, var(--c) 40%, transparent);
+    white-space: nowrap;
+  }
+  .badge .dot { width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--c); box-shadow: 0 0 0.6rem var(--c); }
+  .badge svg { width: 1rem; height: 1rem; }
+
+  .card-body { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; padding: 1.2rem 1rem; text-align: center; }
+  .cap { width: 3rem; height: 3rem; color: #6d7893; }
+  .student {
+    font-family: var(--font-display); font-weight: 700; font-size: 3.6rem; line-height: 1.05; color: var(--text);
+    max-width: 100%; overflow-wrap: anywhere;
+  }
+  .pill {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    font-size: 1.5rem; padding: 0.45rem 1.3rem; border-radius: 99rem; color: #eaf0ff;
+  }
+  .pill.instructor { background: #1f5fe0; box-shadow: 0 0 1rem rgba(31,95,224,.4); }
+  .pill.lesson { background: #3a414f; color: #d5dbe8; }
+
+  .card-time {
+    margin: 0 1.3rem 1.3rem;
+    display: flex; align-items: center; justify-content: center; gap: 0.7rem;
+    padding: 1rem; border-radius: 0.8rem; background: #060c18;
+    font-family: var(--font-display); font-weight: 500; font-size: 2.5rem; color: var(--time);
+    font-variant-numeric: tabular-nums;
+  }
+  .card-time svg { width: 2.2rem; height: 2.2rem; }
+
+  /* ---------- Status themes ---------- */
+  /* GREEN */
+  .s-active   { --c: var(--green); --time: var(--yellow); }
+  .s-ready    { --c: var(--lime);  --time: var(--yellow); animation: pulse-glow 1.8s ease-in-out infinite; }
+  /* YELLOW */
+  .s-waiting  { --c: var(--yellow); --time: var(--yellow); }
+  .s-waiting .badge .dot { animation: blink 1.2s ease-in-out infinite; }
+  .s-upcoming { --c: var(--amber);  --time: var(--yellow); }
+  /* RED */
+  .s-cancelled { --c: var(--red); --time: #b5586a; }
+  .s-cancelled .student { color: #ffd3da; }
+  .s-cancelled .plate { filter: saturate(.4) brightness(.8); }
+  .s-cancelled .card-time span { text-decoration: line-through; text-decoration-thickness: 0.18rem; text-decoration-color: var(--red); }
+  .s-cancelled .badge { animation: blink 1.4s ease-in-out infinite; }
+  /* BLUE / dim */
+  .s-completed { --c: var(--blue); --time: #7b8398; }
+  .s-completed .head-top, .s-completed .card-body, .s-completed .card-time { opacity: .55; }
+  .s-completed .badge { opacity: 1; }
+
+  @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
+  @keyframes pulse-glow {
+    0%,100% { box-shadow: 0 0 1.2rem color-mix(in srgb, var(--c) 40%, transparent), inset 0 0 1.4rem color-mix(in srgb, var(--c) 8%, transparent); }
+    50%     { box-shadow: 0 0 2.8rem color-mix(in srgb, var(--c) 80%, transparent), inset 0 0 2rem color-mix(in srgb, var(--c) 16%, transparent); }
+  }
+
+  /* ---------- Pager + ticker ---------- */
+  .pager { display: flex; justify-content: center; gap: 0.7rem; min-height: 0.8rem; }
+  .pager i { width: 0.8rem; height: 0.8rem; border-radius: 50%; background: #26314f; transition: background .3s, box-shadow .3s; }
+  .pager i.on { background: var(--green); box-shadow: 0 0 0.7rem var(--green); }
+
+  .ticker {
+    margin: 0 -2.2rem; height: 3.6rem; display: flex; align-items: center;
+    border-top: 1px solid var(--line); background: #070d1b; overflow: hidden;
+  }
+  .ticker .tag {
+    flex: none; margin: 0 1.2rem 0 1.4rem; padding: 0.3rem 1.1rem; border-radius: 99rem;
+    background: var(--green); color: #032414; font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; letter-spacing: 0.03em; text-transform: uppercase;
+  }
+  .ticker .track { flex: 1; overflow: hidden; white-space: nowrap; }
+  .ticker .move { display: inline-block; padding-left: 100%; animation: scroll 55s linear infinite; font-size: 1.3rem; color: #dfe6f6; }
+  @keyframes scroll { to { transform: translateX(-100%); } }
+
+  @media (max-width: 900px) {
+    html { font-size: 2vw; }
+    .stage { grid-template-columns: 1fr; overflow-y: auto; }
+    .top { grid-template-columns: 1fr; gap: 1rem; }
+    .clock-wrap { justify-content: space-between; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">
+    <div class="brand-icon">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3 1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.55L12 15l5-2.56v3.55z"/></svg>
+    </div>
+    <div>
+      <h1>Sam's Driving School LLC</h1>
+      <p>Smart Lobby TV • Live Dispatch Terminal</p>
+    </div>
+  </div>
+
+  <div class="live-pill"><span class="live-dot"></span>Live Lobby Board</div>
+
+  <div class="clock-wrap">
+    <div class="clock">
+      <div class="time" id="time">--:--:-- --</div>
+      <div class="date" id="date"></div>
+    </div>
+    <div class="tools">
+      <button class="tool" id="btnSound" aria-label="Toggle sound" title="Sound alerts on/off">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <button class="tool" id="btnBell" aria-label="Test chime" title="Test chime">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+      </button>
+      <button class="tool" id="btnFull" aria-label="Fullscreen" title="Fullscreen">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="stage" id="stage" aria-live="polite"></main>
+<div class="pager" id="pager"></div>
+
+<footer class="ticker">
+  <span class="tag">Announcement</span>
+  <div class="track"><span class="move" id="ticker"></span></div>
+</footer>
+
+<script>
+/* =========================================================
+   1) CONFIG — edit here
+   ========================================================= */
+const CONFIG = {
+  perPage: 3,            // cards per screen
+  pageSeconds: 10,       // auto-rotate when more than perPage lessons
+  endpoint: null,        // e.g. '/api/lessons' — must return the same JSON array as LESSONS
+  pollSeconds: 15,       // refresh interval if endpoint is set
+  announcement: "Welcome to Sam's Driving School LLC • Please have your Maryland learner permit ready • Safe driving is respect for life • Maryland MVA COMAR 11.23 Compliant"
+};
+
+/* fuel = fuel level in % (0–100). Statuses: active | ready | waiting | upcoming | cancelled | completed */
+let LESSONS = [
+  { student: "Marcus Johnson", instructor: "Mr. Anderson", lesson: "Lesson 5 · Highway Merging", plate: "8WD 4931", fuel: 62, start: "9:00 AM",  end: "11:00 AM", status: "active" },
+  { student: "Sarah Chen",     instructor: "Ms. Rivera",   lesson: "Lesson 5 · Highway Merging", plate: "8WD 4931", fuel: 78, start: "10:30 AM", end: "12:30 PM", status: "upcoming" },
+  { student: "David Kim",      instructor: "Mr. Thompson", lesson: "Lesson 5 · Highway Merging", plate: "8WD 4931", fuel: 34, start: "7:00 AM",  end: "9:00 AM",  status: "completed" },
+
+  { student: "Emily Carter",   instructor: "Mr. Anderson", lesson: "Lesson 3 · Parallel Parking", plate: "4KT 2208", fuel: 91, start: "11:00 AM", end: "1:00 PM",  status: "ready" },
+  { student: "Omar Hassan",    instructor: "Ms. Rivera",   lesson: "Lesson 2 · City Driving",     plate: "6PL 7715", fuel: 12, start: "1:00 PM",  end: "3:00 PM",  status: "waiting" },
+  { student: "Jessica Lee",    instructor: "Mr. Thompson", lesson: "Lesson 6 · Night Driving",    plate: "2MR 9046", fuel: 45, start: "3:30 PM",  end: "5:30 PM",  status: "cancelled" }
+];
+
+/* Status → label / icon. Colors live in the .s-* CSS classes */
+const STATUS = {
+  active:    { label: "Active · On Road",         icon: "dot" },
+  ready:     { label: "Ready to Start Class",     icon: "dot" },
+  waiting:   { label: "Awaiting Class Start",     icon: "dot" },
+  upcoming:  { label: "Upcoming Next",            icon: "dot" },
+  cancelled: { label: "Cancelled",                icon: "x" },
+  completed: { label: "Completed",                icon: "check" }
+};
+
+/* =========================================================
+   2) Rendering
+   ========================================================= */
+const ICON = {
+  cap:   '<svg class="cap" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3 1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.55L12 15l5-2.56v3.55z"/></svg>',
+  clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+  check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+  x:     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+  dot:   '<span class="dot"></span>'
+};
+
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+const PUMP = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.77 7.23l.01-.01-3.72-3.72L15 4.56l2.11 2.11c-.94.36-1.61 1.26-1.61 2.33 0 1.38 1.12 2.5 2.5 2.5.36 0 .69-.08 1-.21v7.21c0 .55-.45 1-1 1s-1-.45-1-1V14c0-1.1-.9-2-2-2h-1V5c0-1.1-.9-2-2-2H6c-1.1 0-2 .9-2 2v16h10v-7.5h1.5v5c0 1.38 1.12 2.5 2.5 2.5s2.5-1.12 2.5-2.5V9c0-.69-.28-1.32-.73-1.77zM12 10H6V5h6v5zm6 0c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"/></svg>';
+
+/* Fuel gauge (0–100 %). Returns '' when the value is missing. */
+function fuelHTML(fuel) {
+  if (fuel == null || isNaN(fuel)) return '';
+  const p = Math.max(0, Math.min(100, Math.round(fuel)));
+  const tone = p >= 50 ? '' : p >= 25 ? 'mid' : 'low';
+  const lit = p > 0 ? Math.max(1, Math.round(p / 10)) : 0;
+  const segs = Array.from({ length: 10 }, (_, i) => `<i class="${i < lit ? 'on' : ''}"></i>`).join('');
+  return `
+    <div class="fuel ${tone}" role="meter" aria-label="Fuel level" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${p}">
+      <div class="fuel-top">${PUMP}<span class="fuel-pct">${p}%</span></div>
+      <div class="fuel-bar">${segs}</div>
+      <div class="fuel-scale"><span>E</span><span>${tone === 'low' ? 'LOW FUEL' : 'FUEL'}</span><span>F</span></div>
+    </div>`;
+}
+
+function cardHTML(l) {
+  const st = STATUS[l.status] || STATUS.upcoming;
+  const [p1, ...p2] = String(l.plate).split(' ');
+  const showClock = l.status === 'active' || l.status === 'ready' || l.status === 'waiting';
+  return `
+  <article class="card s-${esc(l.status)}">
+    <div class="card-head">
+      <div class="head-top">
+        <div class="plate"><span class="state">Maryland</span><span class="num">${esc(l.plate)}</span></div>
+        ${fuelHTML(l.fuel)}
+      </div>
+      <span class="badge">${ICON[st.icon]}${esc(st.label)}</span>
+    </div>
+    <div class="card-body">
+      ${ICON.cap}
+      <div class="student">${esc(l.student)}</div>
+      <div class="pill instructor">🧑‍🏫 ${esc(l.instructor)}</div>
+      <div class="pill lesson">🚗 ${esc(l.lesson)}</div>
+    </div>
+    <div class="card-time">${showClock ? ICON.clock : ''}<span>${esc(l.start)} – ${esc(l.end)}</span></div>
+  </article>`;
+}
+
+const stage = document.getElementById('stage');
+const pager = document.getElementById('pager');
+let page = 0, rotateTimer = null;
+
+function renderPage() {
+  const pages = Math.max(1, Math.ceil(LESSONS.length / CONFIG.perPage));
+  if (page >= pages) page = 0;
+  const slice = LESSONS.slice(page * CONFIG.perPage, page * CONFIG.perPage + CONFIG.perPage);
+  stage.innerHTML = slice.map(cardHTML).join('');
+  pager.innerHTML = pages > 1 ? Array.from({length: pages}, (_, i) => `<i class="${i === page ? 'on' : ''}"></i>`).join('') : '';
+}
+
+function nextPage() {
+  const pages = Math.ceil(LESSONS.length / CONFIG.perPage);
+  if (pages <= 1) return renderPage();
+  stage.classList.add('fade');
+  setTimeout(() => { page = (page + 1) % pages; renderPage(); stage.classList.remove('fade'); }, 450);
+}
+
+function startRotation() {
+  clearInterval(rotateTimer);
+  if (LESSONS.length > CONFIG.perPage) rotateTimer = setInterval(nextPage, CONFIG.pageSeconds * 1000);
+}
+
+/* Public API: call setLessons([...]) from your own code / websocket / Next.js wrapper */
+window.setLessons = function (next) {
+  const before = new Map(LESSONS.map(l => [l.student + l.start, l.status]));
+  LESSONS = next;
+  const becameReady = next.some(l => l.status === 'ready' && before.get(l.student + l.start) !== 'ready');
+  if (becameReady) chime();
+  renderPage(); startRotation();
+};
+
+/* =========================================================
+   3) Clock, ticker, tools
+   ========================================================= */
+function tick() {
+  const d = new Date();
+  document.getElementById('time').textContent = d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  document.getElementById('date').textContent = d.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+}
+tick(); setInterval(tick, 1000);
+document.getElementById('ticker').textContent = CONFIG.announcement + '   •   ' + CONFIG.announcement;
+
+let soundOn = true, audioCtx = null;
+function chime() {
+  if (!soundOn) return;
+  try {
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    [880, 1175].forEach((f, i) => {
+      const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+      o.type = 'sine'; o.frequency.value = f;
+      g.gain.setValueAtTime(0.0001, audioCtx.currentTime + i * 0.25);
+      g.gain.exponentialRampToValueAtTime(0.25, audioCtx.currentTime + i * 0.25 + 0.03);
+      g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + i * 0.25 + 0.6);
+      o.connect(g); g.connect(audioCtx.destination);
+      o.start(audioCtx.currentTime + i * 0.25); o.stop(audioCtx.currentTime + i * 0.25 + 0.65);
+    });
+  } catch (e) { /* audio blocked until first user interaction */ }
+}
+document.getElementById('btnSound').addEventListener('click', e => { soundOn = !soundOn; e.currentTarget.classList.toggle('off', !soundOn); });
+document.getElementById('btnBell').addEventListener('click', chime);
+document.getElementById('btnFull').addEventListener('click', () => {
+  if (document.fullscreenElement) document.exitFullscreen();
+  else document.documentElement.requestFullscreen && document.documentElement.requestFullscreen();
+});
+
+/* Optional live data */
+async function poll() {
+  if (!CONFIG.endpoint) return;
+  try {
+    const r = await fetch(CONFIG.endpoint, { cache: 'no-store' });
+    if (r.ok) window.setLessons(await r.json());
+  } catch (e) { /* keep showing the last known data */ }
+}
+if (CONFIG.endpoint) { poll(); setInterval(poll, CONFIG.pollSeconds * 1000); }
+
+renderPage(); startRotation();
+</script>
+</body>
+</html>

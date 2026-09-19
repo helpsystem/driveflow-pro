@@ -1,0 +1,54 @@
+/* DriveFlow Pro – responsive layer. Loaded AFTER frontend.css / admin.css; additive only. */
+
+/* ---- 1. Media never overflows its container ---- */
+:is(.sam-eval-container, [class*="driveflow"], [class*="dfv2-"], [class*="df-"]) img { max-width: 100%; height: auto; }
+:is(.sam-eval-container, [class*="driveflow"], [class*="df-"]) :is(canvas, video, svg) { max-width: 100%; }
+
+/* ---- 2. Notched phones: keep content inside the safe area ---- */
+.sam-eval-container {
+    padding-left: max(12px, env(safe-area-inset-left));
+    padding-right: max(12px, env(safe-area-inset-right));
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+}
+
+/* ---- 3. Wide admin content scrolls inside its own box, never the page ---- */
+.df-calendar-board,
+.df-table-container { max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.df-modal { max-width: calc(100vw - 24px); max-height: calc(100vh - 24px); max-height: calc(100dvh - 24px); overflow-y: auto; }
+
+/* ---- 4. Phones / small tablets ---- */
+@media (max-width: 768px) {
+    /* 16px inputs stop iOS Safari from zooming on focus; 44px = comfortable touch target */
+    :is(.sam-eval-container, [class*="driveflow"], [class*="dfv2-"], [class*="df-"], [class*="sam-"])
+        :is(input:not([type="checkbox"], [type="radio"], [type="range"], [type="hidden"]), select, textarea) {
+        font-size: 16px;
+        min-height: 44px;
+    }
+    :is(.sam-eval-container, [class*="driveflow"], [class*="df-"], [class*="sam-"])
+        :is(button, [type="submit"], [type="button"], .button) {
+        min-height: 44px;
+    }
+    .df-table { min-width: 640px; }
+    .df-modal { width: calc(100vw - 16px); }
+}
+
+/* ---- 5. Tablets in portrait ---- */
+@media (max-width: 1024px) {
+    .df-calendar-grid { min-width: 900px; }
+}
+
+/* ---- 6. TV / kiosk on large monitors (1440p, 4K, ultrawide) ----
+   frontend.js sets --df-zoom = min(width/1920, height/1080) (>= 1, 1920px+ screens only). */
+@supports (zoom: 1) {
+    html.dfv2-kiosk-mode .dfv2-tv-wrap {
+        zoom: var(--df-zoom, 1);
+        width: calc(100vw / var(--df-zoom, 1)) !important;
+        height: calc(100vh / var(--df-zoom, 1)) !important;
+        max-width: none !important;
+        max-height: none !important;
+    }
+}
+
+/* ---- 7. Calendar cards: no text selection / callout while long-press dragging on touch screens ---- */
+.df-event-card { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+.df-event-card.is-dragging { opacity: .45; }

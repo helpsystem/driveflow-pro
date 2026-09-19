@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<ruleset name="DriveFlow Pro">
+    <description>PHPCS rules for DriveFlow Pro – WordPress coding standards + security extras.</description>
+
+    <file>driveflow-pro.php</file>
+    <file>includes/</file>
+    <file>templates/</file>
+    <file>uninstall.php</file>
+
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+    <exclude-pattern>*/node_modules/*</exclude-pattern>
+
+    <rule ref="WordPress"/>
+    <rule ref="WordPress.Security.EscapeOutput"/>
+    <rule ref="WordPress.Security.NonceVerification"/>
+    <rule ref="WordPress.DB.PreparedSQL"/>
+
+    <config name="minimum_supported_wp_version" value="6.2"/>
+    <config name="testVersion" value="8.0-"/>
+</ruleset>

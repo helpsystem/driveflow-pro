@@ -369,6 +369,7 @@ $logo_url = !empty($brand['logo']) ? $brand['logo'] : '';
   <!-- Form -->
   <form id="mvaInCarEvalForm">
     <input type="hidden" name="action" value="driveflow_submit_evaluation">
+    <input type="hidden" name="df_nonce" value="<?php echo esc_attr($df_nonce ?? ''); ?>">
     <input type="hidden" name="session_id" id="sam-session-id" value="0">
     <input type="hidden" name="instructor_signature_data" id="instructorSigInput">
     <input type="hidden" name="student_signature_data" id="studentSigInput">
@@ -393,7 +394,12 @@ $logo_url = !empty($brand['logo']) ? $brand['logo'] : '';
           <div style="font-size:12px;color:#64748b;">In-car evaluation and progress record sign-off</div>
         </div>
       </div>
-      <div style="min-width:220px;">
+      <?php if (!empty($locked)) : ?>
+      <div style="min-width:220px;padding:6px 10px;border-radius:8px;background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46;font-size:13px;font-weight:600;">
+        ✓ Signed in: <?php echo esc_html($current_instructor['name']); ?><?php echo !empty($current_instructor['license_number']) ? ' (Lic: ' . esc_html($current_instructor['license_number']) . ')' : ''; ?>
+      </div>
+      <?php endif; ?>
+      <div style="min-width:220px;<?php echo !empty($locked) ? 'display:none;' : ''; ?>">
         <select id="sam-instructor-quick-select" class="sam-input-group" style="width:100%;padding:6px 10px;border-radius:6px;border:1px solid #cbd5e1;font-size:13px;font-weight:600;">
           <option value="">-- Choose Instructor Profile --</option>
           <?php if (!empty($instructors)) : foreach ($instructors as $ins) : ?>
@@ -454,12 +460,12 @@ $logo_url = !empty($brand['logo']) ? $brand['logo'] : '';
 
       <div class="sam-input-group">
         <label>Instructor Name *</label>
-        <input type="text" name="instructor_name" id="sam-instructor-name" required placeholder="Instructor Name">
+        <input type="text" name="instructor_name" id="sam-instructor-name" required placeholder="Instructor Name" value="<?php echo esc_attr(!empty($locked) ? $current_instructor['name'] : ''); ?>" <?php echo !empty($locked) ? 'readonly' : ''; ?>>
       </div>
 
       <div class="sam-input-group">
         <label>Instructor License #</label>
-        <input type="text" name="instructor_cert_no" id="sam-instructor-cert" placeholder="MVA Lic. / Cert #">
+        <input type="text" name="instructor_cert_no" id="sam-instructor-cert" placeholder="MVA Lic. / Cert #" value="<?php echo esc_attr(!empty($locked) ? $current_instructor['license_number'] : ''); ?>" <?php echo !empty($locked) ? 'readonly' : ''; ?>>
       </div>
 
       <div class="sam-input-group">

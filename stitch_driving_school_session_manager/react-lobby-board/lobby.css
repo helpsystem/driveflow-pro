@@ -1,0 +1,43 @@
+/* Neon effects driven by CSS custom properties (--c = status color, --f = fuel color) */
+
+@keyframes lb-blink { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+@keyframes lb-marquee { to { transform: translateX(-100%); } }
+@keyframes lb-pulse {
+  0%, 100% { box-shadow: 0 0 1.2rem color-mix(in srgb, var(--c) 40%, transparent), inset 0 0 1.4rem color-mix(in srgb, var(--c) 8%, transparent); }
+  50%      { box-shadow: 0 0 2.8rem color-mix(in srgb, var(--c) 80%, transparent), inset 0 0 2rem color-mix(in srgb, var(--c) 16%, transparent); }
+}
+
+.lb-card {
+  border: 2px solid var(--c);
+  background: linear-gradient(180deg, #0e1a2c 0%, #0a1220 100%);
+  box-shadow:
+    0 0 1.6rem color-mix(in srgb, var(--c) 45%, transparent),
+    inset 0 0 1.6rem color-mix(in srgb, var(--c) 10%, transparent);
+}
+.lb-pulse { animation: lb-pulse 1.8s ease-in-out infinite; }
+.lb-divider { border-bottom: 1px solid color-mix(in srgb, var(--c) 45%, transparent); }
+
+.lb-badge {
+  color: var(--c);
+  border: 1.5px solid var(--c);
+  background: color-mix(in srgb, var(--c) 12%, transparent);
+  box-shadow: 0 0 .9rem color-mix(in srgb, var(--c) 40%, transparent);
+}
+.lb-dot { background: var(--c); box-shadow: 0 0 .6rem var(--c); }
+.lb-blink { animation: lb-blink 1.4s ease-in-out infinite; }
+
+/* Fuel gauge */
+.lb-fuel {
+  color: var(--f);
+  border: 1px solid color-mix(in srgb, var(--f) 45%, transparent);
+  box-shadow: 0 0 .9rem color-mix(in srgb, var(--f) 30%, transparent);
+}
+.lb-fuel-seg { background: #1b2540; }
+.lb-fuel-seg.on { background: var(--f); box-shadow: 0 0 .5rem var(--f); }
+.lb-fuel.low .lb-fuel-pct, .lb-fuel.low svg { animation: lb-blink 1s ease-in-out infinite; }
+
+.lb-marquee { display: inline-block; padding-left: 100%; animation: lb-marquee 55s linear infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .lb-pulse, .lb-blink, .lb-marquee, .lb-fuel.low .lb-fuel-pct, .lb-fuel.low svg { animation: none; }
+}

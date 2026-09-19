@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, audit/fixes ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  php-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: composer:v2
+          coverage: none
+      - name: Install dependencies
+        working-directory: stitch_driving_school_session_manager/driveflow-pro
+        run: composer install --prefer-dist --no-progress
+      - name: PHP syntax check
+        working-directory: stitch_driving_school_session_manager/driveflow-pro
+        run: find . -name "*.php" -not -path "*/vendor/*" | xargs php -l
+      - name: PHPCS
+        working-directory: stitch_driving_school_session_manager/driveflow-pro
+        run: vendor/bin/phpcs
+        continue-on-error: true   # informational until backlog is cleared
+      - name: PHPStan
+        working-directory: stitch_driving_school_session_manager/driveflow-pro
+        run: vendor/bin/phpstan analyse --no-progress
+        continue-on-error: true   # informational until backlog is cleared
+      - name: PHPUnit
+        working-directory: stitch_driving_school_session_manager/driveflow-pro
+        run: vendor/bin/phpunit
+
+  js-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Node syntax check
+        run: |
+          for f in stitch_driving_school_session_manager/driveflow-pro/assets/*.js; do
+            node --check "$f" && echo "OK: $f"
+          done
