@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Driving School | Session Status Board</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "surface-container-high": "#222a3d",
+                "primary": "#4edea3",
+                "primary-container": "#10b981",
+                "surface-container-low": "#131b2e",
+                "on-tertiary-fixed": "#001e2c",
+                "surface-variant": "#2d3449",
+                "error": "#ffb4ab",
+                "surface-bright": "#31394d",
+                "slate-deep": "#0f172a",
+                "on-primary-container": "#00422b",
+                "on-secondary-fixed": "#2a1700",
+                "on-jade-container": "#d1fae5",
+                "tertiary-fixed": "#c4e7ff",
+                "surface-container": "#171f33",
+                "secondary": "#ffb95f",
+                "error-container": "#93000a",
+                "jade-container": "#064e3b",
+                "outline": "#86948a",
+                "on-secondary-fixed-variant": "#653e00",
+                "on-primary": "#003824",
+                "on-error-container": "#ffdad6",
+                "on-primary-fixed": "#002113",
+                "secondary-fixed-dim": "#ffb95f",
+                "on-tertiary-container": "#003e55",
+                "tertiary-fixed-dim": "#7bd0ff",
+                "surface": "#0b1326",
+                "slate-surface": "#1e293b",
+                "on-secondary": "#472a00",
+                "surface-container-lowest": "#060e20",
+                "outline-variant": "#3c4a42",
+                "on-tertiary-fixed-variant": "#004c69",
+                "surface-tint": "#4edea3",
+                "amber-signal": "#f59e0b",
+                "on-error": "#690005",
+                "jade-vibrant": "#10b981",
+                "surface-dim": "#0b1326",
+                "on-surface-variant": "#bbcabf",
+                "secondary-container": "#ee9800",
+                "secondary-fixed": "#ffddb8",
+                "on-primary-fixed-variant": "#005236",
+                "inverse-on-surface": "#283044",
+                "primary-fixed-dim": "#4edea3",
+                "inverse-primary": "#006c49",
+                "primary-fixed": "#6ffbbe",
+                "on-surface": "#dae2fd",
+                "background": "#0b1326",
+                "on-secondary-container": "#5b3800",
+                "on-tertiary": "#00354a",
+                "on-background": "#dae2fd",
+                "tertiary-container": "#19aee8",
+                "inverse-surface": "#dae2fd",
+                "tertiary": "#7bd0ff",
+                "surface-container-highest": "#2d3449",
+                "tv-bg": "#0b1326",
+                "tv-surface": "#171f33",
+                "tv-active-bg": "rgba(16, 185, 129, 0.1)",
+                "tv-active-border": "#10b981",
+                "tv-live-bg": "rgba(245, 158, 11, 0.2)"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.125rem",
+                "lg": "0.25rem",
+                "xl": "0.5rem",
+                "full": "0.75rem"
+        },
+        "spacing": {
+                "margin-desktop": "48px",
+                "unit": "8px",
+                "margin-mobile": "16px",
+                "tv-safe-zone": "64px",
+                "touch-target-min": "48px",
+                "gutter": "24px"
+        },
+        "fontFamily": {
+                "label-lg": [
+                        "Vazirmatn"
+                ],
+                "headline-lg-mobile": [
+                        "Vazirmatn"
+                ],
+                "headline-md": [
+                        "Vazirmatn"
+                ],
+                "body-lg": [
+                        "Vazirmatn"
+                ],
+                "body-md": [
+                        "Vazirmatn"
+                ],
+                "display-md": [
+                        "Vazirmatn"
+                ],
+                "headline-lg": [
+                        "Vazirmatn"
+                ],
+                "display-lg": [
+                        "Vazirmatn"
+                ]
+        },
+        "fontSize": {
+                "label-lg": [
+                        "14px",
+                        {
+                                "lineHeight": "20px",
+                                "letterSpacing": "0.05em",
+                                "fontWeight": "600"
+                        }
+                ],
+                "headline-lg-mobile": [
+                        "28px",
+                        {
+                                "lineHeight": "36px",
+                                "fontWeight": "700"
+                        }
+                ],
+                "headline-md": [
+                        "24px",
+                        {
+                                "lineHeight": "32px",
+                                "fontWeight": "600"
+                        }
+                ],
+                "body-lg": [
+                        "18px",
+                        {
+                                "lineHeight": "28px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "body-md": [
+                        "16px",
+                        {
+                                "lineHeight": "24px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "display-md": [
+                        "48px",
+                        {
+                                "lineHeight": "60px",
+                                "fontWeight": "700"
+                        }
+                ],
+                "headline-lg": [
+                        "32px",
+                        {
+                                "lineHeight": "40px",
+                                "fontWeight": "700"
+                        }
+                ],
+                "display-lg": [
+                        "72px",
+                        {
+                                "lineHeight": "90px",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "800"
+                        }
+                ]
+        }
+},
+    },
+  }
+</script>
+<style>
+        body {
+            overflow: hidden; /* No scrollbars on TV */
+            background-color: theme('colors.tv-bg');
+            color: white;
+        }
+        .pulse-amber {
+            animation: pulseAmber 2s infinite;
+        }
+        @keyframes pulseAmber {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        .pulse-dot {
+            animation: pulseDot 1.5s infinite;
+        }
+        @keyframes pulseDot {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
+    </style>
+</head>
+<body class="w-screen h-screen flex flex-col p-tv-safe-zone">
+<!-- Header -->
+<header class="flex justify-between items-center mb-4 border-b border-outline/30 pb-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[36px] text-primary-container">directions_car</span>
+<h1 class="font-headline-md text-headline-md text-white m-0">Driving School | Session Status Board</h1>
+</div>
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3 text-outline-variant bg-surface-container-high px-4 py-2 rounded-xl">
+<span class="material-symbols-outlined text-[32px] text-amber-signal">partly_cloudy_day</span>
+<div class="flex flex-col">
+<span class="font-headline-md text-[20px] leading-tight font-bold text-white">72°F</span>
+<span class="font-body-md text-[12px] leading-tight">Sunny</span>
+</div>
+</div>
+<div class="text-right flex flex-col items-end">
+<div class="font-headline-lg text-headline-lg text-amber-signal font-bold tracking-widest tabular-nums leading-none" id="live-clock-time">00:00:00</div>
+<div class="font-body-lg text-body-lg text-outline-variant mt-1" id="live-clock-date">October 16, 2024</div>
+</div>
+</div>
+</header>
+<!-- Main Content Grid -->
+<main class="flex-1 grid grid-cols-12 gap-gutter h-full">
+<!-- Announcements / Secondary Column (Optional for 4K reflow) -->
+<div class="col-span-3 flex flex-col gap-6 h-full">
+<div class="bg-tv-surface rounded-xl p-6 border border-outline/20">
+<h2 class="font-headline-md text-headline-md text-primary-fixed mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined">campaign</span>
+                    Today's Announcements
+                </h2>
+<ul class="space-y-6">
+<li class="bg-surface/50 p-4 rounded-lg border-l-4 border-[#facc15]">
+<p class="font-body-lg text-body-lg text-white">Theory class at 16:00 will be held in Hall B.</p>
+</li>
+<li class="bg-surface/50 p-4 rounded-lg border-l-4 border-primary-container">
+<p class="font-body-lg text-body-lg text-white">Please be present in the yard 15 minutes before the session starts.</p>
+</li>
+<li class="bg-error-container/20 p-4 rounded-lg border-l-4 border-error">
+<p class="font-body-lg text-body-lg text-white">Note: Session 10 with Instructor Hasan Mohammadi has been cancelled today.</p>
+</li></ul>
+</div>
+<div class="bg-tv-surface rounded-xl p-6 border border-outline/20">
+<h2 class="font-headline-md text-headline-md text-primary-fixed mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined">schedule</span>
+                    Coming Up Next
+                </h2>
+<div class="space-y-4">
+<div class="flex justify-between items-center bg-surface/50 p-4 rounded-lg">
+<span class="text-outline-variant font-body-lg">Next Student</span>
+<span class="text-white font-bold font-body-lg">Sarah Jenkins</span>
+</div>
+<div class="flex justify-between items-center bg-surface/50 p-4 rounded-lg">
+<span class="text-outline-variant font-body-lg">Next Instructor</span>
+<span class="text-white font-bold font-body-lg">David Miller</span>
+</div>
+<div class="flex justify-between items-center bg-surface/50 p-4 rounded-lg">
+<span class="text-outline-variant font-body-lg">Scheduled Time</span>
+<span class="text-primary-container font-bold font-body-lg">14:00</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Main Schedule Table -->
+<div class="col-span-9 bg-tv-surface rounded-xl overflow-hidden border border-outline/20 flex flex-col h-full">
+<div class="bg-black/30 p-6 grid grid-cols-7 gap-4 font-headline-md text-headline-md text-outline-variant border-b border-outline/20">
+<div class="col-span-1">Time</div>
+<div class="col-span-1">Instructor</div>
+<div class="col-span-1">Student</div>
+<div class="col-span-1">Session</div>
+<div class="col-span-1">License Plate</div>
+<div class="col-span-1">Lesson Topic</div>
+<div class="col-span-1 text-center">Status</div>
+</div>
+<div class="flex-1 overflow-hidden flex flex-col">
+<!-- Current Student Row (1.5x height, Active) -->
+<div class="bg-tv-active-bg p-8 grid grid-cols-7 gap-4 items-center border-b border-tv-active-border/50 transition-colors">
+<div class="col-span-1 font-headline-lg text-headline-lg text-white font-bold tabular-nums">10:00 - 12:00</div>
+<div class="col-span-1 font-body-lg text-body-lg text-white flex items-center gap-2">
+<span class="material-symbols-outlined text-outline-variant">person</span>
+                        Ali Rezaei
+                    </div>
+<div class="col-span-1 font-body-lg text-body-lg text-white font-bold">Mohammad Ahmadi</div>
+<div class="col-span-1 font-body-lg text-body-lg text-outline-variant">Session 4</div>
+<div class="col-span-1 flex items-center justify-center"><div class="w-32 h-16 rounded-lg border-2 border-outline/30 shadow-sm overflow-hidden"><img alt="Maryland Crab License Plate" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1UWTwE7kYG63rxYniaaeL9-rmNQZkhoWqM09E20lc0oz16P8imJ3TylTxD02hxvpwEdLcMMZb5l2tawxyAF9YeNSyrtt_CTjcZ_F9mt62LT4IsFn_AYq2IY0X0Wf5cJt2AoA1G4Rr4MGzI6sANMy6w-1nPOm-9Xkge-_w9-x3t5gFKRhOE_U2AcaydWqH6TIV1njKcD4_q7Mx82r8b0sojhYt4bu1T4sGV36DfgSNXEroykBQuFUmHmSzh7"/></div></div>
+<div class="col-span-1 font-body-lg text-body-lg text-white">Parallel Parking</div>
+<div class="col-span-1 flex justify-center">
+<div class="bg-tv-live-bg border border-[#facc15] text-[#facc15] px-6 py-3 rounded-full font-label-lg text-label-lg flex items-center gap-3 pulse-amber animate-pulse">
+<span class="w-3 h-3 bg-[#facc15] rounded-full pulse-dot"></span>
+                            In Progress
+                        </div>
+</div>
+</div>
+<!-- Upcoming Row -->
+<div class="bg-tv-surface p-6 grid grid-cols-7 gap-4 items-center border-b border-outline/20">
+<div class="col-span-1 font-headline-md text-headline-md text-outline-variant tabular-nums">12:00 - 14:00</div>
+<div class="col-span-1 font-body-lg text-body-lg text-outline-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-outline/50">person</span>
+                        Sara Hosseini
+                    </div>
+<div class="col-span-1 font-body-lg text-body-lg text-white">Zahra Karimi</div>
+<div class="col-span-1 font-body-lg text-body-lg text-outline-variant">Session 1</div>
+<div class="col-span-1 flex items-center justify-center"><div class="w-32 h-16 rounded-lg border-2 border-outline/30 shadow-sm overflow-hidden"><img alt="Maryland Crab License Plate CRAB-24" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1UWTwE7kYG63rxYniaaeL9-rmNQZkhoWqM09E20lc0oz16P8imJ3TylTxD02hxvpwEdLcMMZb5l2tawxyAF9YeNSyrtt_CTjcZ_F9mt62LT4IsFn_AYq2IY0X0Wf5cJt2AoA1G4Rr4MGzI6sANMy6w-1nPOm-9Xkge-_w9-x3t5gFKRhOE_U2AcaydWqH6TIV1njKcD4_q7Mx82r8b0sojhYt4bu1T4sGV36DfgSNXEroykBQuFUmHmSzh7"/></div></div>
+<div class="col-span-1 font-body-lg text-body-lg text-outline-variant">Car Introduction</div>
+<div class="col-span-1 flex justify-center">
+<div class="bg-tertiary-container/20 border border-tertiary-container text-tertiary-container px-6 py-2 rounded-full font-label-lg text-label-lg">
+                            Upcoming
+                        </div>
+</div>
+</div>
+<!-- Completed Row -->
+<div class="bg-black/20 p-6 grid grid-cols-7 gap-4 items-center border-b border-outline/10 opacity-70">
+<div class="col-span-1 font-headline-md text-headline-md text-outline-variant tabular-nums">08:00 - 10:00</div>
+<div class="col-span-1 font-body-lg text-body-lg text-outline-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-outline/50">person</span>
+                        Hasan Mohammadi
+                    </div>
+<div class="col-span-1 font-body-lg text-body-lg text-outline-variant">Reza Taghavi</div>
+<div class="col-span-1 font-body-lg text-body-lg text-outline-variant">Session 10</div>
+<div class="col-span-1 flex items-center justify-center opacity-80"><div class="w-32 h-16 rounded-lg border-2 border-outline/30 shadow-sm overflow-hidden"><img alt="Maryland Crab License Plate" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1UWTwE7kYG63rxYniaaeL9-rmNQZkhoWqM09E20lc0oz16P8imJ3TylTxD02hxvpwEdLcMMZb5l2tawxyAF9YeNSyrtt_CTjcZ_F9mt62LT4IsFn_AYq2IY0X0Wf5cJt2AoA1G4Rr4MGzI6sANMy6w-1nPOm-9Xkge-_w9-x3t5gFKRhOE_U2AcaydWqH6TIV1njKcD4_q7Mx82r8b0sojhYt4bu1T4sGV36DfgSNXEroykBQuFUmHmSzh7"/></div></div>
+<div class="col-span-1 font-body-lg text-body-lg text-outline-variant">Night Driving</div>
+<div class="col-span-1 flex justify-center">
+<div class="bg-error-container/20 border border-error text-error px-6 py-2 rounded-full font-label-lg text-label-lg">
+                            Cancelled
+                        </div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script>
+function updateClock() {
+  const now = new Date();
+  const timeEl = document.querySelector('#live-clock-time');
+  const dateEl = document.querySelector('#live-clock-date');
+  
+  if (timeEl) {
+    timeEl.innerText = now.toLocaleTimeString('en-US');
+  }
+  if (dateEl) {
+    dateEl.innerText = now.toLocaleDateString('en-US', { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+  }
+}
+
+setInterval(updateClock, 1000);
+updateClock();
+
+// Simulation of real-time updates
+setInterval(() => {
+  console.log('Fetching latest session statuses via REST API...');
+}, 30000);
+</script>
+</body></html>

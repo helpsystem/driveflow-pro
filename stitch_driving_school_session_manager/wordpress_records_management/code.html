@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DriveFlow Pro - Records</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-tint": "#4edea3",
+                      "on-tertiary": "#00354a",
+                      "on-secondary": "#472a00",
+                      "on-secondary-container": "#5b3800",
+                      "on-tertiary-fixed-variant": "#004c69",
+                      "slate-surface": "#1e293b",
+                      "secondary-fixed-dim": "#ffb95f",
+                      "tertiary-container": "#19aee8",
+                      "surface-container-low": "#131b2e",
+                      "inverse-surface": "#dae2fd",
+                      "surface-container-highest": "#2d3449",
+                      "secondary-container": "#ee9800",
+                      "on-surface-variant": "#bbcabf",
+                      "surface-container-high": "#222a3d",
+                      "primary-fixed": "#6ffbbe",
+                      "surface-variant": "#2d3449",
+                      "jade-container": "#064e3b",
+                      "slate-deep": "#0f172a",
+                      "on-secondary-fixed-variant": "#653e00",
+                      "surface-dim": "#0b1326",
+                      "on-error": "#690005",
+                      "on-primary-container": "#00422b",
+                      "jade-vibrant": "#10b981",
+                      "on-tertiary-container": "#003e55",
+                      "surface-bright": "#31394d",
+                      "tertiary-fixed-dim": "#7bd0ff",
+                      "primary-container": "#10b981",
+                      "surface": "#0b1326",
+                      "on-surface": "#dae2fd",
+                      "on-background": "#dae2fd",
+                      "secondary": "#ffb95f",
+                      "surface-container-lowest": "#060e20",
+                      "error": "#ffb4ab",
+                      "on-jade-container": "#d1fae5",
+                      "inverse-on-surface": "#283044",
+                      "on-secondary-fixed": "#2a1700",
+                      "primary-fixed-dim": "#4edea3",
+                      "surface-container": "#171f33",
+                      "tertiary": "#7bd0ff",
+                      "on-primary-fixed-variant": "#005236",
+                      "primary": "#4edea3",
+                      "on-tertiary-fixed": "#001e2c",
+                      "outline-variant": "#3c4a42",
+                      "tertiary-fixed": "#c4e7ff",
+                      "on-primary": "#003824",
+                      "inverse-primary": "#006c49",
+                      "on-error-container": "#ffdad6",
+                      "background": "#0b1326",
+                      "amber-signal": "#f59e0b",
+                      "error-container": "#93000a",
+                      "outline": "#86948a",
+                      "secondary-fixed": "#ffddb8",
+                      "on-primary-fixed": "#002113"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "safe-zone-tv": "64px",
+                      "unit": "8px",
+                      "margin-desktop": "48px",
+                      "touch-target-min": "48px",
+                      "gutter": "24px",
+                      "margin-mobile": "16px"
+              },
+              "fontFamily": {
+                      "display-lg": [
+                              "Be Vietnam Pro"
+                      ],
+                      "headline-lg": [
+                              "Be Vietnam Pro"
+                      ],
+                      "headline-md": [
+                              "Be Vietnam Pro"
+                      ],
+                      "body-lg": [
+                              "Be Vietnam Pro"
+                      ],
+                      "label-lg": [
+                              "Be Vietnam Pro"
+                      ],
+                      "headline-lg-mobile": [
+                              "Be Vietnam Pro"
+                      ],
+                      "body-md": [
+                              "Be Vietnam Pro"
+                      ],
+                      "display-md": [
+                              "Be Vietnam Pro"
+                      ]
+              },
+              "fontSize": {
+                      "display-lg": [
+                              "72px",
+                              {
+                                      "lineHeight": "90px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "800"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-lg": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-md": [
+                              "48px",
+                              {
+                                      "lineHeight": "60px",
+                                      "fontWeight": "700"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        body { font-family: 'Be Vietnam Pro', sans-serif; }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col md:flex-row">
+<!-- TopAppBar (Mobile) -->
+<header class="md:hidden flex justify-between items-center px-margin-mobile w-full h-20 bg-slate-deep border-b border-outline-variant z-50 fixed top-0">
+<div class="font-display-md text-display-md font-bold text-primary">DriveFlow Pro</div>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-primary cursor-pointer">help</span>
+<span class="material-symbols-outlined text-primary cursor-pointer">notifications</span>
+<span class="material-symbols-outlined text-primary cursor-pointer">account_circle</span>
+</div>
+</header>
+<!-- SideNavBar (Desktop) -->
+<nav class="hidden md:flex fixed left-0 top-0 h-full flex-col pt-20 bg-surface-container w-64 z-40 border-r border-surface-container-high">
+<div class="px-6 py-4 border-b border-surface-container-high mb-4">
+<h2 class="font-headline-md text-headline-md text-primary font-bold">DriveFlow Pro</h2>
+<p class="text-on-surface-variant font-label-lg text-label-lg mt-1">Operational Excellence</p>
+</div>
+<div class="flex-1 overflow-y-auto space-y-2 px-4">
+<a class="text-on-surface-variant hover:bg-surface-variant px-4 py-3 flex items-center gap-3 rounded-DEFAULT transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-lg text-label-lg">Dashboard</span>
+</a>
+<a class="text-on-surface-variant hover:bg-surface-variant px-4 py-3 flex items-center gap-3 rounded-DEFAULT transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-lg text-label-lg">Settings</span>
+</a>
+<a class="bg-jade-container text-on-jade-container border-l-4 border-primary px-4 py-3 flex items-center gap-3 rounded-r-DEFAULT transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">group</span>
+<span class="font-label-lg text-label-lg font-bold">Records</span>
+</a>
+<a class="text-on-surface-variant hover:bg-surface-variant px-4 py-3 flex items-center gap-3 rounded-DEFAULT transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">contact_support</span>
+<span class="font-label-lg text-label-lg">Support</span>
+</a>
+</div>
+<div class="p-4 mt-auto border-t border-surface-container-high">
+<button class="w-full bg-primary-container text-on-primary-container font-label-lg text-label-lg py-3 rounded-lg flex items-center justify-center gap-2 hover:bg-primary transition-colors">
+<span class="material-symbols-outlined">sync</span>
+                Sync Database
+            </button>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="flex-1 md:ml-64 pt-20 md:pt-0 p-margin-mobile md:p-margin-desktop bg-surface-dim min-h-screen">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-gutter gap-4 mt-8 md:mt-0">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-primary mb-2">Records Management</h1>
+<p class="text-on-surface-variant font-body-md text-body-md">View and manage all submitted instructor sessions.</p>
+</div>
+<div class="flex gap-4 w-full md:w-auto">
+<div class="relative flex-1 md:w-64">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-surface-container border border-outline-variant rounded-lg py-3 pl-10 pr-4 text-on-surface font-body-md text-body-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" placeholder="Search records..." type="text"/>
+</div>
+<button class="bg-surface-container border-2 border-primary text-primary font-label-lg text-label-lg px-6 py-3 rounded-lg flex items-center gap-2 hover:bg-jade-container transition-colors min-w-[48px] justify-center">
+<span class="material-symbols-outlined">download</span>
+<span class="hidden md:inline">Export CSV</span>
+</button>
+</div>
+</div>
+<!-- Data Table Card -->
+<div class="bg-slate-deep border border-outline-variant rounded-xl overflow-hidden shadow-lg">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-high text-on-surface-variant border-b border-outline-variant">
+<th class="p-4 font-label-lg text-label-lg whitespace-nowrap">Date &amp; Time</th>
+<th class="p-4 font-label-lg text-label-lg whitespace-nowrap">Instructor</th>
+<th class="p-4 font-label-lg text-label-lg whitespace-nowrap">Student</th>
+<th class="p-4 font-label-lg text-label-lg whitespace-nowrap">Plate Number</th>
+<th class="p-4 font-label-lg text-label-lg whitespace-nowrap text-right">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant font-body-md text-body-md">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low transition-colors group cursor-pointer">
+<td class="p-4 whitespace-nowrap">
+<div class="text-on-surface">Oct 24, 2023</div>
+<div class="text-on-surface-variant text-sm">09:00 AM</div>
+</td>
+<td class="p-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center text-primary font-bold">JD</div>
+<span class="text-on-surface">John Doe</span>
+</div>
+</td>
+<td class="p-4 text-on-surface">Alice Smith</td>
+<td class="p-4">
+<span class="bg-surface-container border border-outline px-2 py-1 rounded font-mono text-sm tracking-widest text-on-surface">MD-1A2B3C</span>
+</td>
+<td class="p-4 text-right">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-primary text-primary bg-jade-container/30 text-sm font-semibold">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+                                    Verified
+                                </span>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low transition-colors group cursor-pointer">
+<td class="p-4 whitespace-nowrap">
+<div class="text-on-surface">Oct 24, 2023</div>
+<div class="text-on-surface-variant text-sm">11:30 AM</div>
+</td>
+<td class="p-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center text-secondary font-bold">SJ</div>
+<span class="text-on-surface">Sarah Jenkins</span>
+</div>
+</td>
+<td class="p-4 text-on-surface">Bob Johnson</td>
+<td class="p-4">
+<span class="bg-surface-container border border-outline px-2 py-1 rounded font-mono text-sm tracking-widest text-on-surface">MD-9X8Y7Z</span>
+</td>
+<td class="p-4 text-right">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-amber-signal text-amber-signal bg-amber-signal/10 text-sm font-semibold">
+<span class="w-2 h-2 rounded-full bg-amber-signal animate-pulse"></span>
+                                    Pending
+                                </span>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low transition-colors group cursor-pointer">
+<td class="p-4 whitespace-nowrap">
+<div class="text-on-surface">Oct 23, 2023</div>
+<div class="text-on-surface-variant text-sm">02:15 PM</div>
+</td>
+<td class="p-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center text-primary font-bold">MR</div>
+<span class="text-on-surface">Mike Ross</span>
+</div>
+</td>
+<td class="p-4 text-on-surface">Charlie Davis</td>
+<td class="p-4">
+<span class="bg-surface-container border border-outline px-2 py-1 rounded font-mono text-sm tracking-widest text-on-surface">MD-4F5G6H</span>
+</td>
+<td class="p-4 text-right">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-error text-error bg-error-container/30 text-sm font-semibold">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+                                    Cancelled
+                                </span>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-low transition-colors group cursor-pointer">
+<td class="p-4 whitespace-nowrap">
+<div class="text-on-surface">Oct 23, 2023</div>
+<div class="text-on-surface-variant text-sm">04:00 PM</div>
+</td>
+<td class="p-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center text-primary font-bold">JD</div>
+<span class="text-on-surface">John Doe</span>
+</div>
+</td>
+<td class="p-4 text-on-surface">Diana Prince</td>
+<td class="p-4">
+<span class="bg-surface-container border border-outline px-2 py-1 rounded font-mono text-sm tracking-widest text-on-surface">MD-1A2B3C</span>
+</td>
+<td class="p-4 text-right">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-primary text-primary bg-jade-container/30 text-sm font-semibold">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+                                    Verified
+                                </span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="p-4 border-t border-outline-variant flex items-center justify-between bg-surface-container-high">
+<span class="text-on-surface-variant font-body-md text-sm">Showing 1 to 4 of 124 records</span>
+<div class="flex gap-2">
+<button class="p-2 rounded hover:bg-surface-variant text-on-surface-variant transition-colors disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="w-8 h-8 rounded bg-jade-container text-on-jade-container border border-primary flex items-center justify-center font-bold">1</button>
+<button class="w-8 h-8 rounded hover:bg-surface-variant text-on-surface-variant flex items-center justify-center transition-colors">2</button>
+<button class="w-8 h-8 rounded hover:bg-surface-variant text-on-surface-variant flex items-center justify-center transition-colors">3</button>
+<span class="text-on-surface-variant px-1">...</span>
+<button class="p-2 rounded hover:bg-surface-variant text-on-surface-variant transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+</body></html>

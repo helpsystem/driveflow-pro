@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Driving School | Session Status Board</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed-dim": "#ffb960",
+                        "surface-container-low": "#f2f3ff",
+                        "error-container": "#ffdad6",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed": "#ffe083",
+                        "surface-container": "#eaedff",
+                        "primary-fixed-dim": "#7bd0ff",
+                        "error": "#ba1a1a",
+                        "on-primary-container": "#004965",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-fixed": "#ffddb8",
+                        "surface-container-high": "#e2e7ff",
+                        "on-primary-fixed-variant": "#004c69",
+                        "inverse-primary": "#7bd0ff",
+                        "surface-bright": "#faf8ff",
+                        "on-background": "#131b2e",
+                        "surface-container-highest": "#dae2fd",
+                        "on-tertiary": "#ffffff",
+                        "outline-variant": "#bdc8d1",
+                        "on-secondary-fixed-variant": "#574500",
+                        "on-secondary-container": "#6f5900",
+                        "tertiary": "#855300",
+                        "secondary": "#735c00",
+                        "on-secondary-fixed": "#231b00",
+                        "surface-variant": "#dae2fd",
+                        "primary": "#00668a",
+                        "on-secondary": "#ffffff",
+                        "secondary-container": "#fed01b",
+                        "surface-tint": "#00668a",
+                        "primary-container": "#38bdf8",
+                        "on-primary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "on-surface-variant": "#3e484f",
+                        "inverse-surface": "#283044",
+                        "background": "#0f172a", /* Forced slate for TV display */
+                        "secondary-fixed-dim": "#eec200",
+                        "on-primary-fixed": "#001e2c",
+                        "surface-dim": "#d2d9f4",
+                        "primary-fixed": "#c4e7ff",
+                        "on-tertiary-fixed": "#2a1700",
+                        "tertiary-container": "#f1a02b",
+                        "inverse-on-surface": "#eef0ff",
+                        "surface": "#1e293b", /* Forced slate variant for TV display */
+                        "on-surface": "#ffffff", /* Forced white for TV display */
+                        "on-tertiary-container": "#613b00",
+                        "outline": "#6e7980",
+                        "tv-bg": "#0f172a",
+                        "tv-surface": "#1e293b",
+                        "tv-active-bg": "rgba(56, 189, 248, 0.1)",
+                        "tv-active-border": "#38bdf8",
+                        "tv-live-bg": "rgba(250, 204, 21, 0.2)"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "margin-desktop": "48px",
+                        "gutter": "24px",
+                        "tv-safe-zone": "64px",
+                        "unit": "8px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Vazirmatn"],
+                        "display-lg": ["Vazirmatn"],
+                        "headline-md": ["Vazirmatn"],
+                        "headline-lg": ["Vazirmatn"],
+                        "label-lg": ["Vazirmatn"],
+                        "headline-lg-mobile": ["Vazirmatn"],
+                        "display-md": ["Vazirmatn"],
+                        "body-md": ["Vazirmatn"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["22px", {"lineHeight": "32px", "fontWeight": "400"}], /* Increased for TV */
+                        "display-lg": ["72px", {"lineHeight": "90px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "600"}], /* Increased for TV */
+                        "headline-lg": ["48px", {"lineHeight": "60px", "fontWeight": "700"}], /* Increased for TV */
+                        "label-lg": ["18px", {"lineHeight": "28px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                        "display-md": ["48px", {"lineHeight": "60px", "fontWeight": "700"}],
+                        "body-md": ["20px", {"lineHeight": "28px", "fontWeight": "400"}] /* Increased for TV */
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            overflow: hidden; /* No scrollbars on TV */
+            background-color: theme('colors.tv-bg');
+            color: white;
+        }
+        .pulse-amber {
+            animation: pulseAmber 2s infinite;
+        }
+        @keyframes pulseAmber {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        .pulse-dot {
+            animation: pulseDot 1.5s infinite;
+        }
+        @keyframes pulseDot {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
+    </style>
+</head>
+<body class="w-screen h-screen flex flex-col p-tv-safe-zone">
+<!-- Header -->
+<header class="flex justify-between items-center mb-8 border-b border-outline/30 pb-6">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[48px] text-primary-container">directions_car</span>
+<h1 class="font-headline-lg text-headline-lg text-white m-0">Driving School | Session Status Board</h1>
+</div>
+<div class="text-right flex flex-col items-end">
+<div class="font-display-md text-display-md text-[#facc15] font-bold tracking-widest tabular-nums" id="live-clock-time">00:00:00</div>
+<div class="font-headline-md text-headline-md text-outline-variant mt-2" id="live-clock-date">October 16, 2024</div>
+</div>
+</header>
+<!-- Main Content Grid -->
+<main class="flex-1 grid grid-cols-12 gap-gutter h-full">
+<!-- Announcements / Secondary Column (Optional for 4K reflow) -->
+<div class="col-span-3 flex flex-col gap-6 h-full">
+<div class="bg-tv-surface rounded-xl p-6 h-full border border-outline/20">
+<h2 class="font-headline-md text-headline-md text-primary-fixed mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined">campaign</span>
+                    Today's Announcements
+                </h2>
+<ul class="space-y-6">
+<li class="bg-surface/50 p-4 rounded-lg border-l-4 border-[#facc15]">
+<p class="font-body-lg text-body-lg text-white">Theory class at 16:00 will be held in Hall B.</p>
+</li>
+<li class="bg-surface/50 p-4 rounded-lg border-l-4 border-primary-container">
+<p class="font-body-lg text-body-lg text-white">Please be present in the yard 15 minutes before the session starts.</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- Main Schedule Table -->
+<div class="col-span-9 bg-tv-surface rounded-xl overflow-hidden border border-outline/20 flex flex-col h-full">
+<div class="bg-black/30 p-6 grid grid-cols-7 gap-4 font-headline-md text-headline-md text-outline-variant border-b border-outline/20">
+<div class="col-span-1">Time</div>
+<div class="col-span-1">Instructor</div>
+<div class="col-span-1">Student</div>
+<div class="col-span-1">Session</div>
+<div class="col-span-1">License Plate</div>
+<div class="col-span-1">Lesson Topic</div>
+<div class="col-span-1 text-center">Status</div>
+</div>
+<div class="flex-1 overflow-hidden flex flex-col">
+<!-- Current Student Row (1.5x height, Active) -->
+<div class="bg-tv-active-bg p-8 grid grid-cols-7 gap-4 items-center border-b border-tv-active-border/50 transition-colors">
+<div class="col-span-1 font-headline-lg text-headline-lg text-white font-bold tabular-nums">10:00 - 12:00</div>
+<div class="col-span-1 font-body-lg text-body-lg text-white flex items-center gap-2">
+<span class="material-symbols-outlined text-outline-variant">person</span>
+                        Ali Rezaei
+                    </div>
+<div class="col-span-1 font-body-lg text-body-lg text-white font-bold">Mohammad Ahmadi</div>
+<div class="col-span-1 font-body-lg text-body-lg text-outline-variant">Session 4</div>
+<div class="col-span-1 font-body-lg text-body-lg text-primary-container tabular-nums">12 J 345 | 99</div>
+<div class="col-span-1 font-body-lg text-body-lg text-white">Parallel Parking</div>
+<div class="col-span-1 flex justify-center">
+<div class="bg-tv-live-bg border border-[#facc15] text-[#facc15] px-6 py-3 rounded-full font-label-lg text-label-lg flex items-center gap-3 pulse-amber animate-pulse">
+<span class="w-3 h-3 bg-[#facc15] rounded-full pulse-dot"></span>
+                            In Progress
+                        </div>
+</div>
+</div>
+<!-- Upcoming Row -->
+<div class="bg-tv-surface p-6 grid grid-cols-7 gap-4 items-center border-b border-outline/20">
+<div class="col-span-1 font-headline-md text-headline-md text-outline-variant tabular-nums">12:00 - 14:00</div>
+<div class="col-span-1 font-body-lg text-body-lg text-outline-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-outline/50">person</span>
+                        Sara Hosseini
+                    </div>
+<div class="col-span-1 font-body-lg text-body-lg text-white">Zahra Karimi</div>
+<div class="col-span-1 font-body-lg text-body-lg text-outline-variant">Session 1</div>
+<div class="col-span-1 font-body-lg text-body-lg text-primary-container/70 tabular-nums">45 B 890 | 99</div>
+<div class="col-span-1 font-body-lg text-body-lg text-outline-variant">Car Introduction</div>
+<div class="col-span-1 flex justify-center">
+<div class="bg-tertiary-container/20 border border-tertiary-container text-tertiary-container px-6 py-2 rounded-full font-label-lg text-label-lg">
+                            Upcoming
+                        </div>
+</div>
+</div>
+<!-- Completed Row -->
+<div class="bg-black/20 p-6 grid grid-cols-7 gap-4 items-center border-b border-outline/10 opacity-70">
+<div class="col-span-1 font-headline-md text-headline-md text-outline-variant tabular-nums">08:00 - 10:00</div>
+<div class="col-span-1 font-body-lg text-body-lg text-outline-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-outline/50">person</span>
+                        Hasan Mohammadi
+                    </div>
+<div class="col-span-1 font-body-lg text-body-lg text-outline-variant">Reza Taghavi</div>
+<div class="col-span-1 font-body-lg text-body-lg text-outline-variant">Session 10</div>
+<div class="col-span-1 font-body-lg text-body-lg text-outline-variant tabular-nums">67 Q 123 | 99</div>
+<div class="col-span-1 font-body-lg text-body-lg text-outline-variant">Night Driving</div>
+<div class="col-span-1 flex justify-center">
+<div class="bg-outline/20 border border-outline text-outline-variant px-6 py-2 rounded-full font-label-lg text-label-lg">
+                            Completed
+                        </div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script>
+function updateClock() {
+  const now = new Date();
+  const timeEl = document.querySelector('#live-clock-time');
+  const dateEl = document.querySelector('#live-clock-date');
+  
+  if (timeEl) {
+    timeEl.innerText = now.toLocaleTimeString('en-US');
+  }
+  if (dateEl) {
+    dateEl.innerText = now.toLocaleDateString('en-US', { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+  }
+}
+
+setInterval(updateClock, 1000);
+updateClock();
+
+// Simulation of real-time updates
+setInterval(() => {
+  console.log('Fetching latest session statuses via REST API...');
+}, 30000);
+</script>
+</body></html>

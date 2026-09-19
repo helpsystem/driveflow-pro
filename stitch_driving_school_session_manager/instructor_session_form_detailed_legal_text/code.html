@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+
+<html class="dark" dir="ltr" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Submit Session End</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "tertiary-fixed-dim": "#ffb960",
+                        "surface-container-low": "#f2f3ff",
+                        "error-container": "#ffdad6",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed": "#ffe083",
+                        "surface-container": "#eaedff",
+                        "primary-fixed-dim": "#7bd0ff",
+                        "error": "#ba1a1a",
+                        "on-primary-container": "#004965",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-fixed": "#ffddb8",
+                        "surface-container-high": "#e2e7ff",
+                        "on-primary-fixed-variant": "#004c69",
+                        "inverse-primary": "#7bd0ff",
+                        "surface-bright": "#faf8ff",
+                        "on-background": "#131b2e",
+                        "surface-container-highest": "#dae2fd",
+                        "on-tertiary": "#ffffff",
+                        "outline-variant": "#bdc8d1",
+                        "on-secondary-fixed-variant": "#574500",
+                        "on-secondary-container": "#6f5900",
+                        "tertiary": "#855300",
+                        "secondary": "#735c00",
+                        "on-secondary-fixed": "#231b00",
+                        "surface-variant": "#dae2fd",
+                        "primary": "#00668a",
+                        "on-secondary": "#ffffff",
+                        "secondary-container": "#fed01b",
+                        "surface-tint": "#00668a",
+                        "primary-container": "#38bdf8",
+                        "on-primary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "on-surface-variant": "#3e484f",
+                        "inverse-surface": "#283044",
+                        "background": "#faf8ff",
+                        "secondary-fixed-dim": "#eec200",
+                        "on-primary-fixed": "#001e2c",
+                        "surface-dim": "#d2d9f4",
+                        "primary-fixed": "#c4e7ff",
+                        "on-tertiary-fixed": "#2a1700",
+                        "tertiary-container": "#f1a02b",
+                        "inverse-on-surface": "#eef0ff",
+                        "surface": "#faf8ff",
+                        "on-surface": "#131b2e",
+                        "on-tertiary-container": "#613b00",
+                        "outline": "#6e7980"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    spacing: {
+                        "margin-mobile": "16px",
+                        "margin-desktop": "48px",
+                        "gutter": "24px",
+                        "tv-safe-zone": "64px",
+                        "unit": "8px"
+                    },
+                    fontFamily: {
+                        "body-lg": ["Vazirmatn"],
+                        "display-lg": ["Vazirmatn"],
+                        "headline-md": ["Vazirmatn"],
+                        "headline-lg": ["Vazirmatn"],
+                        "label-lg": ["Vazirmatn"],
+                        "headline-lg-mobile": ["Vazirmatn"],
+                        "display-md": ["Vazirmatn"],
+                        "body-md": ["Vazirmatn"]
+                    },
+                    fontSize: {
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "display-lg": ["72px", { "lineHeight": "90px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+                        "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "700" }],
+                        "display-md": ["48px", { "lineHeight": "60px", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Vazirmatn', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .filled-icon { font-variation-settings: 'FILL' 1; }
+        .glass-panel {
+            background: rgba(40, 48, 68, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(189, 200, 209, 0.2);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface dark:bg-inverse-surface text-on-surface dark:text-inverse-on-surface min-h-screen flex flex-col pb-24">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-inverse-surface border-b border-outline-variant dark:border-outline docked full-width top-0 sticky z-40 flat no shadows flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop h-16">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed-dim" data-icon="arrow_back">arrow_back</span>
+<h1 class="text-headline-md font-headline-md font-bold text-primary dark:text-primary-fixed-dim">Submit Session End</h1>
+</div>
+<div class="flex items-center gap-4 text-primary dark:text-primary-fixed-dim">
+<span class="material-symbols-outlined hover:bg-surface-container-high transition-colors p-2 rounded-full cursor-pointer" data-icon="schedule">schedule</span>
+<span class="material-symbols-outlined hover:bg-surface-container-high transition-colors p-2 rounded-full cursor-pointer" data-icon="account_circle">account_circle</span>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 px-margin-mobile py-6 flex flex-col gap-6 max-w-2xl mx-auto w-full">
+<!-- Progress Indicator -->
+<div class="w-full h-3 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-secondary-container w-[90%] transition-all duration-500 rounded-full"></div>
+</div>
+<!-- Session Details Form -->
+<section class="flex flex-col gap-5">
+<div class="flex flex-col gap-2">
+<label class="text-label-lg font-label-lg text-on-surface-variant dark:text-inverse-on-surface" for="studentName">Student Name</label>
+<input class="h-12 bg-surface-container-low dark:bg-inverse-surface border border-outline-variant rounded-lg px-4 text-body-lg font-body-lg text-on-surface dark:text-inverse-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" id="studentName" readonly="" type="text" value="Ali Ahmadi"/>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="flex flex-col gap-2">
+<label class="text-label-lg font-label-lg text-on-surface-variant dark:text-inverse-on-surface" for="sessionNum">Session Number</label>
+<input class="h-12 bg-surface-container-low dark:bg-inverse-surface border border-outline-variant rounded-lg px-4 text-body-lg font-body-lg text-on-surface dark:text-inverse-on-surface text-center" id="sessionNum" readonly="" type="number" value="8"/>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-label-lg font-label-lg text-on-surface-variant dark:text-inverse-on-surface" for="lessonTopic">Lesson Topic</label>
+<select class="h-12 bg-surface-container-highest dark:bg-inverse-surface border border-outline-variant rounded-lg px-4 text-body-md font-body-md text-on-surface dark:text-inverse-on-surface focus:outline-none focus:border-primary-container focus:border-2" id="lessonTopic">
+<option>Parallel Parking</option>
+<option>Reversing</option>
+<option>Left &amp; Right Turns</option>
+</select>
+</div>
+</div>
+</section>
+<!-- Live Instructor Photo -->
+<section class="flex flex-col gap-2">
+<label class="text-label-lg font-label-lg text-on-surface-variant dark:text-inverse-on-surface">Instructor Live Photo</label>
+<div class="relative w-full aspect-video bg-surface-container-highest rounded-xl overflow-hidden border border-outline-variant flex items-center justify-center group">
+<div class="absolute inset-0 bg-inverse-surface animate-pulse opacity-20"></div>
+<!-- Camera feed -->
+<video autoplay="" class="absolute inset-0 w-full h-full object-cover z-0" id="instructor-photo-video" muted="" playsinline=""></video>
+<div class="absolute top-4 right-4 z-10 flex items-center gap-2 bg-surface/80 dark:bg-inverse-surface/80 px-3 py-1 rounded-full backdrop-blur-sm border border-outline-variant/30">
+<div class="w-2 h-2 rounded-full bg-error animate-ping"></div>
+<span class="text-label-lg font-label-lg text-on-surface dark:text-inverse-on-surface">REC</span>
+</div>
+<button class="z-10 bg-primary-container/90 text-on-primary-container p-4 rounded-full backdrop-blur-md border border-primary-container hover:scale-105 transition-transform shadow-lg flex items-center gap-2" title="Capture">
+<span class="material-symbols-outlined text-headline-lg" data-icon="photo_camera">photo_camera</span>
+</button>
+</div>
+</section>
+<!-- Teacher Signature Pad -->
+<section class="flex flex-col gap-2">
+<label class="text-label-lg font-label-lg text-on-surface-variant dark:text-inverse-on-surface">Instructor Signature</label>
+<div class="relative w-full h-48 bg-surface-container-lowest rounded-xl border-2 border-dashed border-primary-container flex flex-col overflow-hidden">
+<div class="flex-1 w-full relative" id="signature-canvas-area">
+<!-- Canvas placeholder -->
+<div class="absolute inset-0 w-full h-full flex items-center justify-center opacity-30 text-on-surface-variant pointer-events-none">
+<span class="material-symbols-outlined text-display-md" data-icon="draw">draw</span>
+</div>
+</div>
+<div class="flex justify-between items-center p-2 border-t border-outline-variant/20 bg-surface/50 z-10 relative">
+<button class="px-4 py-2 text-label-lg font-label-lg text-on-surface-variant hover:text-error transition-colors flex items-center gap-1" id="clear-signature-btn">
+<span class="material-symbols-outlined text-[18px]" data-icon="clear">clear</span> Clear Signature
+                    </button>
+<button class="px-4 py-2 text-label-lg font-label-lg text-primary hover:text-primary-container transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]" data-icon="check">check</span> Confirm Signature
+                    </button>
+</div>
+</div>
+</section>
+<!-- Submit Button -->
+<section class="flex flex-col gap-4 p-4 bg-surface-container-low dark:bg-inverse-surface/80 rounded-xl border border-outline-variant/30">
+<h3 class="text-label-lg font-bold text-primary dark:text-primary-fixed-dim uppercase tracking-wider">Legal Compliance</h3>
+<div class="flex items-start gap-3">
+<div class="relative flex items-center">
+<input class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary bg-surface cursor-pointer" id="compliance-check" type="checkbox"/>
+</div>
+<label class="text-body-md text-on-surface-variant dark:text-inverse-on-surface cursor-pointer" for="compliance-check">By checking this box, I hereby certify that I have conducted this training session in full accordance with the official curriculum and safety protocols. I confirm that the student has met the required objectives for this lesson and that I have verified their identity. I acknowledge my responsibility for the accuracy of this session record and the safety of the student during the instruction period.</label>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-label-lg font-label-lg text-on-surface-variant dark:text-inverse-on-surface">Instructor Digital Confirmation</label>
+<div class="relative">
+<input class="h-12 w-full bg-surface dark:bg-surface-container-high border border-outline-variant rounded-lg px-4 text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" placeholder="Type full name to sign" type="text"/>
+<span class="material-symbols-outlined absolute right-3 top-3 text-on-surface-variant opacity-50" data-icon="edit">edit</span>
+</div>
+</div>
+<button class="w-full py-2 border-2 border-primary text-primary font-bold rounded-lg hover:bg-primary hover:text-on-primary transition-colors flex items-center justify-center gap-2" type="button">
+<span class="material-symbols-outlined" data-icon="verified">verified</span>
+        Confirm Compliance
+    </button>
+</section><button class="btn-submit mt-4 w-full h-14 bg-secondary-container hover:bg-secondary-fixed text-on-secondary-container rounded-xl flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-all duration-200">
+<span class="text-headline-md font-headline-md font-bold">Submit and Send</span>
+<span class="material-symbols-outlined filled-icon" data-icon="send">send</span>
+</button>
+</main>
+<!-- BottomNavBar (Hidden on Desktop) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full bg-surface dark:bg-inverse-surface border-t border-outline-variant shadow-lg flex justify-around items-center px-4 pb-safe h-20 z-50">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-highest transition-colors tap-highlight-transparent active:scale-95 w-16 h-16 rounded-xl" href="#">
+<span class="material-symbols-outlined" data-icon="visibility">visibility</span>
+<span class="text-label-lg font-label-lg mt-1 text-[10px]">Monitor</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-4 py-1 tap-highlight-transparent active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined filled-icon" data-icon="format_list_bulleted">format_list_bulleted</span>
+<span class="text-label-lg font-label-lg mt-1 text-[10px]">Queue</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-highest transition-colors tap-highlight-transparent active:scale-95 w-16 h-16 rounded-xl" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="text-label-lg font-label-lg mt-1 text-[10px]">Settings</span>
+</a>
+</nav>
+<script>
+    // Camera integration logic from requested data
+    const video = document.querySelector('#instructor-photo-video');
+    const canvas = document.createElement('canvas');
+    const submitBtn = document.querySelector('button[type="submit"], .btn-submit');
+
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } })
+        .then(stream => {
+          if (video) video.srcObject = stream;
+        })
+        .catch(err => console.error('Camera access error:', err));
+    }
+
+    if (submitBtn) {
+      submitBtn.addEventListener('click', (e) => {
+        // Note: In a real app, prevent default and use AJAX
+        console.log('Capturing signature and selfie...');
+        
+        if (video && video.readyState === video.HAVE_ENOUGH_DATA) {
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+          canvas.getContext('2d').drawImage(video, 0, 0);
+          const selfieData = canvas.toDataURL('image/jpeg');
+          console.log('Selfie captured (base64 length):', selfieData.length);
+        }
+      });
+    }
+
+    // Interactive Signature Pad Logic
+    const sigCanvasArea = document.getElementById('signature-canvas-area');
+    if (sigCanvasArea) {
+        const sigCanvas = document.createElement('canvas');
+        sigCanvas.className = "absolute inset-0 w-full h-full cursor-crosshair touch-none z-10";
+        sigCanvasArea.appendChild(sigCanvas);
+        
+        const resizeCanvas = () => {
+            sigCanvas.width = sigCanvasArea.clientWidth;
+            sigCanvas.height = sigCanvasArea.clientHeight;
+        };
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        
+        const ctx = sigCanvas.getContext('2d');
+        ctx.strokeStyle = '#00668a'; // primary color fallback
+        ctx.lineWidth = 3;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        
+        // Dynamic color based on dark mode could be added here, 
+        // falling back to primary/on-surface-variant 
+        const isDarkMode = document.documentElement.classList.contains('dark');
+        ctx.strokeStyle = isDarkMode ? '#7bd0ff' : '#00668a';
+
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+        
+        function getPos(e) {
+            const rect = sigCanvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return {
+                x: clientX - rect.left,
+                y: clientY - rect.top
+            };
+        }
+        
+        function startDrawing(e) {
+            isDrawing = true;
+            const pos = getPos(e);
+            [lastX, lastY] = [pos.x, pos.y];
+        }
+        
+        function draw(e) {
+            if (!isDrawing) return;
+            const pos = getPos(e);
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(pos.x, pos.y);
+            ctx.stroke();
+            [lastX, lastY] = [pos.x, pos.y];
+        }
+        
+        function stopDrawing() {
+            isDrawing = false;
+        }
+        
+        sigCanvas.addEventListener('mousedown', startDrawing);
+        sigCanvas.addEventListener('mousemove', draw);
+        sigCanvas.addEventListener('mouseup', stopDrawing);
+        sigCanvas.addEventListener('mouseout', stopDrawing);
+        
+        sigCanvas.addEventListener('touchstart', (e) => { e.preventDefault(); startDrawing(e); }, { passive: false });
+        sigCanvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e); }, { passive: false });
+        sigCanvas.addEventListener('touchend', stopDrawing);
+        
+        const clearBtn = document.getElementById('clear-signature-btn');
+        if (clearBtn) {
+            clearBtn.addEventListener('click', () => {
+                ctx.clearRect(0, 0, sigCanvas.width, sigCanvas.height);
+            });
+        }
+    }
+</script>
+</body></html>

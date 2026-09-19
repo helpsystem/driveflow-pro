@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DriveFlow Pro - Administrative Portal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error-container": "#93000a",
+                        "on-error-container": "#ffdad6",
+                        "on-primary": "#003824",
+                        "primary-fixed-dim": "#4edea3",
+                        "on-surface": "#dde4dd",
+                        "finance-negative": "#f87171",
+                        "primary-container": "#10b981",
+                        "secondary": "#ffb95f",
+                        "on-surface-variant": "#bbcabf",
+                        "tertiary-fixed-dim": "#7bd0ff",
+                        "secondary-fixed": "#ffddb8",
+                        "on-background": "#dde4dd",
+                        "inverse-on-surface": "#2b322d",
+                        "surface-container": "#1a211d",
+                        "on-tertiary-fixed-variant": "#004c69",
+                        "surface-bright": "#343b36",
+                        "status-paid": "#10b981",
+                        "on-tertiary-container": "#003e55",
+                        "tertiary-container": "#19aee8",
+                        "surface-container-low": "#161d19",
+                        "tertiary-fixed": "#c4e7ff",
+                        "secondary-fixed-dim": "#ffb95f",
+                        "finance-positive": "#34d399",
+                        "on-error": "#690005",
+                        "on-secondary-fixed": "#2a1700",
+                        "surface-container-highest": "#2f3632",
+                        "primary": "#4edea3",
+                        "outline": "#86948a",
+                        "on-primary-fixed": "#002113",
+                        "on-primary-fixed-variant": "#005236",
+                        "status-debt": "#f59e0b",
+                        "background": "#0e1511",
+                        "on-primary-container": "#00422b",
+                        "tertiary": "#7bd0ff",
+                        "outline-variant": "#3c4a42",
+                        "surface-tint": "#4edea3",
+                        "on-secondary-fixed-variant": "#653e00",
+                        "table-border": "#334155",
+                        "surface-variant": "#2f3632",
+                        "surface-container-high": "#242c27",
+                        "surface": "#0e1511",
+                        "on-secondary": "#472a00",
+                        "on-tertiary-fixed": "#001e2c",
+                        "status-error": "#ef4444",
+                        "inverse-primary": "#006c49",
+                        "surface-container-lowest": "#09100c",
+                        "surface-dim": "#0e1511",
+                        "secondary-container": "#ee9800",
+                        "inverse-surface": "#dde4dd",
+                        "table-row-alt": "#1e293b",
+                        "on-tertiary": "#00354a",
+                        "on-secondary-container": "#5b3800",
+                        "primary-fixed": "#6ffbbe",
+                        "error": "#ffb4ab"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "report-gutter": "1.5rem",
+                        "table-cell-padding-x": "1rem",
+                        "table-cell-padding-y": "0.75rem",
+                        "data-gap": "0.5rem"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["beVietnamPro", "sans-serif"],
+                        "table-header": ["beVietnamPro", "sans-serif"],
+                        "label-sm": ["beVietnamPro", "sans-serif"],
+                        "data-mono": ["beVietnamPro", "monospace"],
+                        "body-md": ["beVietnamPro", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "table-header": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "label-sm": ["11px", { "lineHeight": "16px", "fontWeight": "700" }],
+                        "data-mono": ["14px", { "lineHeight": "20px", "letterSpacing": "0.02em", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Be Vietnam Pro', sans-serif; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+    </style>
+</head>
+<body class="bg-background text-on-surface h-screen overflow-hidden flex">
+<!-- SideNavBar (Shared Component) -->
+<nav class="h-screen w-64 fixed left-0 top-0 bg-surface-container-low border-r border-table-border flex flex-col h-full py-6 z-20">
+<div class="px-6 mb-8 flex items-center gap-3">
+<img alt="DriveFlow Pro" class="w-10 h-10 rounded" src="https://lh3.googleusercontent.com/aida/AEtjO1W6IrI5zvYwxb_F7HOEE_X2eNbHpGXLm8g4iusX0ZDjDU_qLUsYXmE-JzosKspby2R6eUiVpoUK-zbJ80yV9u3PwQ7RLOSJCjB8XUA-ERqNqzA_-g8CW--OknPh5HRoElJFv3K12L6kkKv6QxuURIUA742F1q-i7b5vCgbH5D8y9O_28zi9mkWAGhqHBkSujQzrDfpAE8HQ84CnT-Awmc0xun5I6kUtbajRNpHL-PurVwqS1hKjvcic6sKr"/>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">DriveFlow Pro</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Administrative Portal</p>
+</div>
+</div>
+<div class="px-4 mb-6">
+<button class="w-full bg-primary text-on-primary font-body-md text-body-md py-2 px-4 rounded hover:bg-primary-fixed transition-colors font-semibold flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add</span>
+                New Record
+            </button>
+</div>
+<ul class="flex-1 px-3 space-y-1">
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded text-primary font-bold border-l-4 border-primary bg-surface-container-high hover:bg-surface-bright transition-colors cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-body-md text-body-md">Reports</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded text-on-surface-variant hover:bg-surface-bright transition-colors cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="font-body-md text-body-md">Financials</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded text-on-surface-variant hover:bg-surface-bright transition-colors cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="folder_shared">folder_shared</span>
+<span class="font-body-md text-body-md">Records</span>
+</a>
+</li>
+<li><a class="flex items-center gap-3 px-3 py-2 rounded text-on-surface-variant hover:bg-surface-bright transition-colors cursor-pointer active:scale-95" href="#"><span class="material-symbols-outlined" data-icon="nfc">nfc</span><span class="font-body-md text-body-md">NFC Config</span></a></li></ul>
+<div class="mt-auto px-3 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded text-on-surface-variant hover:bg-surface-bright transition-colors cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded text-on-surface-variant hover:bg-surface-bright transition-colors cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="font-body-md text-body-md">Support</span>
+</a>
+</div>
+</nav>
+<!-- TopNavBar (Shared Component) -->
+<header class="h-16 fixed top-0 right-0 left-64 bg-surface-container-high border-b border-table-border flex items-center justify-between px-report-gutter w-[calc(100%-16rem)] z-10">
+<div class="flex items-center bg-surface-container-low rounded px-3 py-1.5 focus-within:ring-1 focus-within:ring-primary w-64 border border-outline-variant">
+<span class="material-symbols-outlined text-on-surface-variant mr-2 text-sm">search</span>
+<input class="bg-transparent border-none outline-none text-on-surface font-body-md text-body-md w-full placeholder:text-on-surface-variant p-0 focus:ring-0" placeholder="Search records..." type="text"/>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:text-primary transition-all">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-all">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-surface-variant overflow-hidden border border-outline-variant ml-2">
+<img alt="Admin Profile" class="w-full h-full object-cover" data-alt="A professional headshot of an administrative user in a corporate setting. High contrast, sharp focus, cinematic lighting. Dark background with subtle cool tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHP2zLycqVHzrzr_aOR86QCgstWMNnOfFYx3jfjxA6FrGsNxv25GypdPCdtsG2r0KX_BYlL2NcorXUDNg-u5ACzbx46C2uslya8wJfk3wOB_OP7_SNyd_R_vfG3HWzPfjg9G5IB64OrtOQz63-qas-Q7WlW6H50n7fd3KhQfCooHzJjwoymg9RP3VfIdY_N81SYm4-DmALah0u8Qp_ITvLx8rkcH4UjsdU-MoI0hg_NsrC32KZR28ehw"/>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="ml-64 mt-16 p-report-gutter flex-1 h-[calc(100vh-4rem)] overflow-y-auto bg-surface relative">
+<!-- Background texture/subtle effect -->
+<div class="absolute inset-0 pointer-events-none opacity-5" style="background-image: radial-gradient(circle at center, #10b981 1px, transparent 1px); background-size: 24px 24px;"></div>
+<div class="relative z-10 max-w-7xl mx-auto space-y-6">
+<!-- Page Header -->
+<div class="flex items-center justify-between mb-4">
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Financial Reports Dashboard</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Real-time operational intelligence and financial overview.</p>
+</div>
+<div class="flex gap-2">
+<button class="bg-surface-container-high hover:bg-surface-bright border border-outline-variant text-on-surface px-4 py-2 rounded font-data-mono text-data-mono flex items-center gap-2 transition-colors">
+<span class="material-symbols-outlined text-sm">calendar_month</span>
+                        Sep 2023
+                    </button>
+<button class="bg-surface-container-high hover:bg-surface-bright border border-outline-variant text-on-surface px-4 py-2 rounded font-data-mono text-data-mono flex items-center gap-2 transition-colors">
+<span class="material-symbols-outlined text-sm">download</span>
+                        Export
+                    </button>
+</div>
+</div>
+<!-- Summary Cards (Bento Grid Style) -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-data-gap">
+<!-- Total Revenue -->
+<div class="bg-surface-container-low border border-table-border p-5 rounded-lg flex flex-col justify-between hover:bg-surface-container transition-colors group">
+<div class="flex justify-between items-start mb-4">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Total Revenue (Monthly)</span>
+<div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined text-primary text-sm">account_balance_wallet</span>
+</div>
+</div>
+<div>
+<div class="font-headline-md text-3xl font-bold text-on-surface mb-1">$124,500.00</div>
+<div class="flex items-center gap-1 font-data-mono text-xs text-finance-positive">
+<span class="material-symbols-outlined text-xs">trending_up</span>
+<span>+12.5% vs last month</span>
+</div>
+</div>
+</div>
+<!-- Pending Student Payments -->
+<div class="bg-surface-container-low border border-table-border p-5 rounded-lg flex flex-col justify-between hover:bg-surface-container transition-colors group">
+<div class="flex justify-between items-start mb-4">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Pending Student Pymts</span>
+<div class="w-8 h-8 rounded-full bg-status-debt/10 flex items-center justify-center group-hover:bg-status-debt/20 transition-colors">
+<span class="material-symbols-outlined text-status-debt text-sm">pending_actions</span>
+</div>
+</div>
+<div>
+<div class="font-headline-md text-3xl font-bold text-on-surface mb-1">$8,240.00</div>
+<div class="flex items-center gap-1 font-data-mono text-xs text-status-debt">
+<span class="material-symbols-outlined text-xs">warning</span>
+<span>42 students in arrears</span>
+</div>
+</div>
+</div>
+<!-- Instructor Loans Outstanding -->
+<div class="bg-surface-container-low border border-table-border p-5 rounded-lg flex flex-col justify-between hover:bg-surface-container transition-colors group">
+<div class="flex justify-between items-start mb-4">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Instructor Loans (Out)</span>
+<div class="w-8 h-8 rounded-full bg-finance-negative/10 flex items-center justify-center group-hover:bg-finance-negative/20 transition-colors">
+<span class="material-symbols-outlined text-finance-negative text-sm">money_off</span>
+</div>
+</div>
+<div>
+<div class="font-headline-md text-3xl font-bold text-on-surface mb-1">$3,150.00</div>
+<div class="flex items-center gap-1 font-data-mono text-xs text-on-surface-variant">
+<span>Across 5 active instructors</span>
+</div>
+</div>
+</div>
+<!-- Net Balance -->
+<div class="bg-surface-container-high border-l-4 border-l-primary border-y border-r border-table-border p-5 rounded-lg flex flex-col justify-between relative overflow-hidden">
+<!-- Subtle glow effect behind net balance -->
+<div class="absolute -right-4 -bottom-4 w-24 h-24 bg-primary/10 rounded-full blur-xl pointer-events-none"></div>
+<div class="flex justify-between items-start mb-4 relative z-10">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Net Balance</span>
+<div class="w-8 h-8 rounded-full bg-surface-bright flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface text-sm">account_balance</span>
+</div>
+</div>
+<div class="relative z-10">
+<div class="font-headline-md text-3xl font-bold text-primary mb-1">$113,110.00</div>
+<div class="flex items-center gap-1 font-data-mono text-xs text-on-surface-variant">
+<span>Available Operating Capital</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Main Data Interface -->
+<div class="bg-surface-container-low border border-table-border rounded-lg overflow-hidden flex flex-col h-[500px]">
+<!-- Tab Navigation -->
+<div class="flex border-b border-table-border bg-surface-container-lowest overflow-x-auto">
+<button class="tab-btn active px-6 py-4 font-label-sm text-label-sm uppercase tracking-wider text-primary border-b-2 border-primary bg-surface-container-low transition-colors" data-target="tab-daily">
+                        Daily Operations
+                    </button>
+<button class="tab-btn px-6 py-4 font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low border-b-2 border-transparent transition-colors" data-target="tab-instructors">
+                        Instructor Financials
+                    </button>
+<button class="tab-btn px-6 py-4 font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low border-b-2 border-transparent transition-colors" data-target="tab-students">
+                        Student Accounting
+                    </button>
+</div>
+<!-- Filter Bar (Administrative Controls) -->
+<div class="bg-surface-container p-3 border-b border-table-border flex items-center gap-4">
+<div class="flex items-center bg-surface-container-low rounded border border-outline-variant px-2 h-8 w-64">
+<span class="material-symbols-outlined text-on-surface-variant text-sm mr-2">filter_list</span>
+<input class="bg-transparent border-none outline-none text-on-surface font-body-md text-sm w-full placeholder:text-on-surface-variant p-0 h-full focus:ring-0" placeholder="Filter current view..." type="text"/>
+</div>
+<div class="flex gap-2">
+<span class="bg-surface-variant text-on-surface font-label-sm text-xs px-2 py-1 rounded flex items-center gap-1 cursor-pointer hover:bg-surface-bright">
+                            Status: Active <span class="material-symbols-outlined text-[10px]">close</span>
+</span>
+</div>
+</div>
+<!-- Tab Content: Instructor Financials (Shown as active for demonstration of data tables) -->
+<div class="tab-content active flex-1 overflow-auto" id="tab-instructors">
+<table class="w-full text-left border-collapse">
+<thead class="sticky top-0 bg-surface-container-high z-10 border-b-2 border-outline-variant">
+<tr>
+<th class="font-table-header text-table-header text-on-surface-variant uppercase px-table-cell-padding-x py-table-cell-padding-y">Instructor ID / Name</th>
+<th class="font-table-header text-table-header text-on-surface-variant uppercase px-table-cell-padding-x py-table-cell-padding-y text-right">Total Earned (MTD)</th>
+<th class="font-table-header text-table-header text-on-surface-variant uppercase px-table-cell-padding-x py-table-cell-padding-y text-right">Loans/Advances</th>
+<th class="font-table-header text-table-header text-on-surface-variant uppercase px-table-cell-padding-x py-table-cell-padding-y text-right">Net Balance</th>
+<th class="font-table-header text-table-header text-on-surface-variant uppercase px-table-cell-padding-x py-table-cell-padding-y text-center w-32">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-table-border bg-transparent">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-bright transition-colors group cursor-pointer">
+<td class="px-table-cell-padding-x py-table-cell-padding-y border-l-2 border-transparent group-hover:border-primary">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-surface-variant flex items-center justify-center font-data-mono text-xs text-on-surface border border-outline-variant">
+                                            MJ
+                                        </div>
+<div>
+<div class="font-data-mono text-on-surface">Michael Johnson</div>
+<div class="font-label-sm text-on-surface-variant">INS-4029</div>
+</div>
+</div>
+</td>
+<td class="px-table-cell-padding-x py-table-cell-padding-y font-data-mono text-on-surface text-right">
+                                    $4,250.00
+                                </td>
+<td class="px-table-cell-padding-x py-table-cell-padding-y font-data-mono text-finance-negative text-right">
+                                    -$500.00
+                                </td>
+<td class="px-table-cell-padding-x py-table-cell-padding-y font-data-mono text-finance-positive text-right font-bold">
+                                    $3,750.00
+                                </td>
+<td class="px-table-cell-padding-x py-table-cell-padding-y text-center">
+<label class="flex items-center justify-center gap-2 cursor-pointer">
+<input class="rounded border-outline-variant bg-surface-container text-primary focus:ring-primary focus:ring-offset-surface" type="checkbox"/>
+<span class="font-label-sm text-on-surface-variant">Pay</span>
+</label>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-bright transition-colors group cursor-pointer bg-table-row-alt/30">
+<td class="px-table-cell-padding-x py-table-cell-padding-y border-l-2 border-transparent group-hover:border-primary">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-surface-variant flex items-center justify-center font-data-mono text-xs text-on-surface border border-outline-variant">
+                                            SL
+                                        </div>
+<div>
+<div class="font-data-mono text-on-surface">Sarah Lee</div>
+<div class="font-label-sm text-on-surface-variant">INS-4105</div>
+</div>
+</div>
+</td>
+<td class="px-table-cell-padding-x py-table-cell-padding-y font-data-mono text-on-surface text-right">
+                                    $3,800.00
+                                </td>
+<td class="px-table-cell-padding-x py-table-cell-padding-y font-data-mono text-on-surface-variant text-right">
+                                    $0.00
+                                </td>
+<td class="px-table-cell-padding-x py-table-cell-padding-y font-data-mono text-finance-positive text-right font-bold">
+                                    $3,800.00
+                                </td>
+<td class="px-table-cell-padding-x py-table-cell-padding-y text-center">
+<label class="flex items-center justify-center gap-2 cursor-pointer">
+<input class="rounded border-outline-variant bg-surface-container text-primary focus:ring-primary focus:ring-offset-surface" type="checkbox"/>
+<span class="font-label-sm text-on-surface-variant">Pay</span>
+</label>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-bright transition-colors group cursor-pointer border-l-2 border-primary bg-surface-container-high"> <!-- Selected State Example -->
+<td class="px-table-cell-padding-x py-table-cell-padding-y border-l-2 border-transparent group-hover:border-primary">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-surface-variant flex items-center justify-center font-data-mono text-xs text-on-surface border border-outline-variant">
+                                            DR
+                                        </div>
+<div>
+<div class="font-data-mono text-on-surface">David Rodriguez</div>
+<div class="font-label-sm text-on-surface-variant">INS-4112</div>
+</div>
+</div>
+</td>
+<td class="px-table-cell-padding-x py-table-cell-padding-y font-data-mono text-on-surface text-right">
+                                    $2,100.00
+                                </td>
+<td class="px-table-cell-padding-x py-table-cell-padding-y font-data-mono text-finance-negative text-right">
+                                    -$2,500.00
+                                </td>
+<td class="px-table-cell-padding-x py-table-cell-padding-y font-data-mono text-status-error text-right font-bold">
+                                    -$400.00
+                                </td>
+<td class="px-table-cell-padding-x py-table-cell-padding-y text-center">
+<span class="inline-block bg-error-container/20 text-error px-2 py-1 rounded font-label-sm text-[10px] uppercase">
+                                        Debt Hold
+                                    </span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination (Administrative Controls) -->
+<div class="mt-auto bg-surface-container-low border-t border-table-border p-3 flex justify-center items-center gap-2">
+<button class="p-1 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-bright transition-colors disabled:opacity-50">
+<span class="material-symbols-outlined text-sm">chevron_left</span>
+</button>
+<button class="w-8 h-8 rounded bg-primary text-on-primary font-data-mono text-sm flex items-center justify-center">1</button>
+<button class="w-8 h-8 rounded bg-transparent border border-outline-variant text-on-surface-variant hover:bg-surface-bright hover:text-on-surface font-data-mono text-sm flex items-center justify-center transition-colors">2</button>
+<button class="w-8 h-8 rounded bg-transparent border border-outline-variant text-on-surface-variant hover:bg-surface-bright hover:text-on-surface font-data-mono text-sm flex items-center justify-center transition-colors">3</button>
+<span class="text-on-surface-variant">...</span>
+<button class="p-1 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-bright transition-colors">
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+</div>
+</div><section class="space-y-6 mt-8"><div class="flex items-center gap-3 mb-2"><span class="material-symbols-outlined text-primary">settings_input_antenna</span><h3 class="font-headline-md text-headline-md text-on-surface">NFC Configuration &amp; Writing Guide</h3></div><div class="bg-primary/10 border border-primary/30 p-4 rounded-lg flex items-start gap-4 mb-6">
+<div class="flex gap-2 mt-1">
+<span class="material-symbols-outlined text-primary">phone_iphone</span>
+<span class="material-symbols-outlined text-primary">robot_2</span>
+</div>
+<div>
+<h4 class="font-bold text-primary text-sm uppercase tracking-wider mb-1">Cross-Platform Optimization</h4>
+<p class="text-on-surface-variant text-xs leading-relaxed">
+            DriveFlow Pro utilizes <strong>NDEF (NFC Data Exchange Format)</strong> for universal compatibility. 
+            iOS requires NDEF formatting (iPhone 7+) while Android provides native NDEF support. 
+            Payloads are optimized for speed on legacy hardware.
+        </p>
+</div>
+</div><div class="grid grid-cols-1 md:grid-cols-2 gap-data-gap"><div class="bg-surface-container-low border border-table-border p-5 rounded-lg"><div class="flex items-center gap-2 mb-4 text-primary"><span class="material-symbols-outlined">badge</span><h4 class="font-bold uppercase tracking-wider text-label-sm">Instructor Tag</h4></div><p class="text-on-surface-variant text-sm mb-4">Stores identity and authentication credentials for instructor login at vehicle terminals.</p><div class="bg-surface-container-lowest p-3 rounded font-data-mono text-xs text-finance-positive mb-4"><pre>{
+  "type": "instructor",
+  "id": "INS-XXXX",
+  "name": "Full Name",
+  "token": "auth_v1_..."
+}</pre></div></div><div class="bg-surface-container-low border border-table-border p-5 rounded-lg"><div class="flex items-center gap-2 mb-4 text-secondary"><span class="material-symbols-outlined">minor_crash</span><h4 class="font-bold uppercase tracking-wider text-label-sm">Vehicle Tag</h4></div><p class="text-on-surface-variant text-sm mb-4">Stores vehicle specifications and fuel system authorization IDs for automated logging.</p><div class="bg-surface-container-lowest p-3 rounded font-data-mono text-xs text-finance-positive mb-4"><pre>{
+  "type": "vehicle",
+  "plate": "ABC-1234",
+  "model": "Toyota Hilux",
+  "fuel_id": "FS-99"
+}</pre></div></div></div><div class="bg-surface-container-high border border-table-border p-6 rounded-lg"><h4 class="font-bold text-on-surface mb-4 flex items-center gap-2"><span class="material-symbols-outlined text-primary">list_alt</span> Writing Workflow</h4><div class="grid grid-cols-1 md:grid-cols-4 gap-4"><div class="flex flex-col gap-2"><div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold">1</div><p class="font-bold text-sm">Scan Tag</p><p class="text-xs text-on-surface-variant">Place blank NTAG215/216 near the writer.</p></div><div class="flex flex-col gap-2"><div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold">2</div><p class="font-bold text-sm">Validate ID</p><p class="text-xs text-on-surface-variant">System checks if ID is unique in database.</p></div><div class="flex flex-col gap-2"><div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold">3</div><p class="font-bold text-sm">Write Data</p><p class="text-xs text-on-surface-variant">Commit JSON payload to the tag memory.</p></div><div class="flex flex-col gap-2"><div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold">4</div><p class="font-bold text-sm">Verify</p><p class="text-xs text-on-surface-variant">Read back data to ensure checksum match.</p></div></div></div><div class="grid grid-cols-1 md:grid-cols-2 gap-data-gap mt-6">
+<div class="bg-surface-container-low border border-table-border p-5 rounded-lg">
+<h4 class="font-bold text-on-surface mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary">speed</span>
+            Writing Performance Settings
+        </h4>
+<ul class="space-y-3">
+<li class="flex items-center gap-2 text-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-primary text-sm">check_circle</span>
+                Record Size: <span class="font-data-mono text-primary">Under 512 bytes</span> for &lt; 1s read time.
+            </li>
+<li class="flex items-center gap-2 text-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-primary text-sm">check_circle</span>
+                Encoding: UTF-8 NDEF Text Records.
+            </li>
+<li class="flex items-center gap-2 text-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-primary text-sm">check_circle</span>
+                Locking: Permanent read-only bit for production tags.
+            </li>
+</ul>
+</div>
+<div class="bg-surface-container-low border border-table-border p-5 rounded-lg">
+<h4 class="font-bold text-on-surface mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary">fact_check</span>
+            Compatibility Checklist
+        </h4>
+<div class="space-y-2">
+<div class="flex justify-between items-center p-2 bg-surface-container-lowest rounded">
+<span class="text-xs font-semibold">iOS (iPhone 7+)</span>
+<span class="text-[10px] bg-primary/20 text-primary px-2 py-0.5 rounded uppercase">NDEF Required</span>
+</div>
+<div class="flex justify-between items-center p-2 bg-surface-container-lowest rounded">
+<span class="text-xs font-semibold">Android (Native)</span>
+<span class="text-[10px] bg-primary/20 text-primary px-2 py-0.5 rounded uppercase">Auto-Launch Ready</span>
+</div>
+<div class="flex justify-between items-center p-2 bg-surface-container-lowest rounded">
+<span class="text-xs font-semibold">NTAG215/216</span>
+<span class="text-[10px] bg-primary/20 text-primary px-2 py-0.5 rounded uppercase">Verified</span>
+</div>
+</div>
+</div>
+</div></section>
+</div>
+</main>
+<script>
+        // Simple tab switching logic for demonstration
+        document.querySelectorAll('.tab-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active classes
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.classList.remove('active', 'text-primary', 'border-primary', 'bg-surface-container-low');
+                    btn.classList.add('text-on-surface-variant', 'border-transparent');
+                });
+                
+                // Add active classes to clicked
+                button.classList.add('active', 'text-primary', 'border-primary', 'bg-surface-container-low');
+                button.classList.remove('text-on-surface-variant', 'border-transparent');
+                
+                // Note: In a real implementation, this would switch the visible table content.
+                // For this UI mockup, we are just keeping the Instructor Financials table visible
+                // to demonstrate the complex data table styling requested.
+            });
+        });
+    </script>
+</body></html>

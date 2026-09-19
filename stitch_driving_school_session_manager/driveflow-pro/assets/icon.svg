@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <defs>
+    <linearGradient id="dfGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f766e" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+    <linearGradient id="dfDark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b1326" />
+      <stop offset="100%" stop-color="#1e293b" />
+    </linearGradient>
+  </defs>
+  <rect width="120" height="120" rx="26" fill="url(#dfDark)" />
+  <circle cx="60" cy="60" r="42" stroke="url(#dfGrad)" stroke-width="7" fill="none" />
+  <!-- Steering wheel spokes & hub -->
+  <circle cx="60" cy="60" r="14" fill="url(#dfGrad)" />
+  <circle cx="60" cy="60" r="7" fill="#0b1326" />
+  <line x1="25" y1="60" x2="46" y2="60" stroke="url(#dfGrad)" stroke-width="6" stroke-linecap="round" />
+  <line x1="74" y1="60" x2="95" y2="60" stroke="url(#dfGrad)" stroke-width="6" stroke-linecap="round" />
+  <line x1="60" y1="74" x2="60" y2="95" stroke="url(#dfGrad)" stroke-width="6" stroke-linecap="round" />
+  <!-- Speed lines -->
+  <path d="M 45 35 Q 60 22 75 35" stroke="#f59e0b" stroke-width="3.5" fill="none" stroke-linecap="round" />
+</svg>
