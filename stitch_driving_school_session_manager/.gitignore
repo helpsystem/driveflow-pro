@@ -1,0 +1,17 @@
+# Ignore OS files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+
+# Ignore editor directories
+.idea/
+.vscode/
+
+# Ignore temporary backup files
+*.tmp
+*.bak
+*.swp
+
+# Allow release zip
+!driveflow-pro.zip
